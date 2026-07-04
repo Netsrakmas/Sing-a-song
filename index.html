@@ -116,7 +116,7 @@ details.adv[open] summary::before{content:"▾ ";}
 #ring circle.track{stroke:var(--line);fill:none;}
 #ring circle.prog{stroke:var(--ice);fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;}
 #ringNum{font-family:'Bungee';font-size:34px;fill:var(--paper);}
-#ring circle.prog.loud{stroke:var(--good);}
+#ring circle.prog.loud,#ring circle.prog.heard{stroke:var(--good);}
 /* mic meter */
 #micMeter{display:none;flex-direction:column;align-items:center;gap:7px;width:min(300px,80vw);margin:2px 0 6px;}
 .meterTrack{position:relative;width:100%;height:16px;border-radius:9px;background:var(--panel);
@@ -460,6 +460,7 @@ nl:{
   allMuted:"Iedereen 🔇? Iedereen doet weer mee!",
   faster:(w,ms,l)=>`${w} was ${(ms/1000).toFixed(2)}s sneller dan ${l}!`,
   micListening:"🎙️ luistert… begin te zingen!", micHeard:"gehoord! 🎶",
+  keepSinging:"Gehoord! Zing de tijd vol 🎶",
   micCalibrating:"🎙️ microfoon kalibreren…",
   micDenied:"Microfoon geweigerd — gebruik de knop hieronder.",
   micUnavailable:"Geen microfoon — gebruik de knop hieronder.",
@@ -485,7 +486,7 @@ nl:{
   howTitle:"Hoe speel je?",
   howBody:`<p><b>1. Leg de telefoon plat</b> in het midden. Iedere speler krijgt een gekleurd vak.</p>
   <p><b>2. Woord verschijnt</b> na 3-2-1. Tik je eigen vak om de mic te pakken. Te vroeg tikken? Dan doe je deze kaart niet mee.</p>
-  <p><b>3. Zing</b> een écht bestaand liedje waar het woord in voorkomt (variaties mogen: ZON → ZONNETJE). Start binnen de timer!</p>
+  <p><b>3. Zing</b> een écht bestaand liedje waar het woord in voorkomt (variaties mogen: ZON → ZONNETJE). De klok tikt je zingtijd af — zing 'm vol! De app registreert of er écht gezongen wordt; niets gehoord als de tijd om is = mis.</p>
   <p><b>4. Stem</b> — de groep beslist of het telt. Goedgekeurd = 🎤. Afgekeurd of te laat = 🔇 en je mist de volgende kaart.</p>
   <p><b>5. Winnen</b> — Klassiek: eerste met het doel-aantal 🎤. Race: eerste over de finish. Knock-out: 2× 🔇 = af. Snel spel: meeste 🎤 na alle rondes.</p>
   <p>🎙️ <b>Luistermodus</b> (aan by default): de telefoon hoort zelf wanneer je begint te zingen en stopt de klok — geen opname, alleen het volume. Zet 'm uit of pas de gevoeligheid aan bij "meer opties". De knop blijft altijd werken als terugval.</p>
@@ -524,6 +525,7 @@ en:{
   allMuted:"Everyone muted? All back in!",
   faster:(w,ms,l)=>`${w} beat ${l} by ${(ms/1000).toFixed(2)}s!`,
   micListening:"🎙️ listening… start singing!", micHeard:"heard you! 🎶",
+  keepSinging:"Heard you! Keep singing till the clock runs out 🎶",
   micCalibrating:"🎙️ calibrating microphone…",
   micDenied:"Microphone denied — use the button below.",
   micUnavailable:"No microphone — use the button below.",
@@ -549,7 +551,7 @@ en:{
   howTitle:"How to play",
   howBody:`<p><b>1. Lay the phone flat</b> in the middle. Each player gets a colored zone.</p>
   <p><b>2. A word appears</b> after 3-2-1. Tap your own zone to grab the mic. Tap too soon? You sit this card out.</p>
-  <p><b>3. Sing</b> a real, existing song that contains the word (variations allowed: WIN → WINNER). Start before the timer runs out!</p>
+  <p><b>3. Sing</b> a real, existing song that contains the word (variations allowed: WIN → WINNER). The clock counts your singing time — sing it out! The app registers whether you actually sang; nothing heard when time is up = miss.</p>
   <p><b>4. Vote</b> — the group decides if it counts. Approved = 🎤. Rejected or too late = 🔇 and you miss the next card.</p>
   <p><b>5. Win</b> — Classic: first to the token goal. Race: first across the finish. Knockout: 2× 🔇 = out. Quick play: most 🎤 after all rounds.</p>
   <p>🎙️ <b>Listen mode</b> (on by default): the phone hears when you start singing and stops the clock — no recording, only loudness. Turn it off or tune the sensitivity under "more options". The button always works as a fallback.</p>
@@ -1007,7 +1009,8 @@ function startSing(){
   const meter = $("micMeter"), fill = $("meterFill"), status = $("micStatus"), prog = $("ringProg");
   meter.style.display = micActive ? "flex" : "none";
   fill.classList.remove("loud"); status.classList.remove("hot");
-  prog.classList.remove("loud");
+  prog.classList.remove("loud","heard");
+  $("singingBtn").style.display = "";
   if(micActive){ status.textContent = t("micListening"); $("singNote").textContent = t("micHint"); }
   else{
     $("singNote").textContent = S.settings.mic ? (mic.denied ? t("micDenied") : t("micUnavailable")) : t("judgeNote");
@@ -1015,6 +1018,10 @@ function startSing(){
 
   const secs = S.settings.singSecs;
   const hasTimer = secs > 0;
+  // performance-clock rule: with the timer on, you sing the FULL window.
+  // Detection (or the judge button) only *registers* that singing happened;
+  // the vote screen appears when the clock runs out. No registration → fail.
+  S.singReg = false; S.singHasTimer = hasTimer;
   $("ring").style.display = hasTimer ? "" : "none";
   if(!hasTimer && !micActive){
     const c=document.createElement("span"); c.className="chip"; c.textContent="⏱ "+t("noTimer"); chips.appendChild(c);
@@ -1036,7 +1043,10 @@ function startSing(){
       const s = Math.ceil(left/1000);
       $("ringNum").textContent = s;
       if(s !== lastWhole){ lastWhole = s; if(s<=3 && s>0) snd.clocktick(); }
-      if(left<=0){ singFail(t("tooLate")); return; }
+      if(left<=0){
+        if(S.singReg) stopToVote(); else singFail(t("tooLate"));
+        return;
+      }
     }
     // --- mic detection ---
     if(micActive){
@@ -1052,15 +1062,27 @@ function startSing(){
         lastDbg = now;
         dbg.textContent = `mic ${mic.level.toFixed(4)} · trig ${thr.toFixed(4)}`;
       }
-      if(now - t0 > MIC_GRACE_MS) loudMs = loud ? loudMs + dt : Math.max(0, loudMs - dt*0.6);
-      if(loudMs >= MIC_SUSTAIN_MS){
-        status.textContent = t("micHeard"); status.classList.add("hot");
-        stopToVote(true); return;
+      if(!S.singReg){
+        if(now - t0 > MIC_GRACE_MS) loudMs = loud ? loudMs + dt : Math.max(0, loudMs - dt*0.6);
+        if(loudMs >= MIC_SUSTAIN_MS) registerSing();
       }
     }
     singRAF = requestAnimationFrame(frame);
   }
   singRAF = requestAnimationFrame(frame);
+}
+function registerSing(){
+  // mark "we heard singing" — the round continues until the clock runs out
+  if(S.phase !== "sing" || S.singReg) return;
+  S.singReg = true;
+  snd.heard(); buzz(40);
+  const st = $("micStatus");
+  st.textContent = t("micHeard"); st.classList.add("hot");
+  $("ringProg").classList.add("heard");
+  if(S.singHasTimer){
+    $("singNote").textContent = t("keepSinging");
+    $("singingBtn").style.display = "none";
+  }
 }
 function stopToVote(){
   if(S.phase !== "sing") return;
@@ -1070,7 +1092,12 @@ function stopToVote(){
   $("voteName").textContent = currentSinger().name;
   $("voteWord").textContent = S.word;
 }
-$("singingBtn").onclick = () => stopToVote(false);   // manual override / fallback
+$("singingBtn").onclick = () => {
+  if(S.phase !== "sing") return;
+  // with the timer on, the judge button registers (clock keeps running);
+  // without a timer it is the "done → vote" control
+  if(S.singHasTimer) registerSing(); else stopToVote();
+};
 $("giveUpBtn").onclick = () => {
   if(S.phase !== "sing") return;
   singFail(t("gaveUp", currentSinger().name));

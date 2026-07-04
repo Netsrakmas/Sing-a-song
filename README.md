@@ -15,9 +15,10 @@ the group is the game.
 1. **Lay the phone flat** in the middle. Each player gets their own colored wedge.
 2. **A word appears** after a 3-2-1 countdown. Tap your own zone to grab the mic.
    Tap too soon and you sit this card out.
-3. **Sing** a real, existing song containing the word (variations allowed: WIN → WINNER)
-   before the timer runs out. With Listen mode on, the phone hears you start and stops the
-   clock itself; otherwise another player taps "singing!" to stop it.
+3. **Sing** a real, existing song containing the word (variations allowed: WIN → WINNER).
+   The clock counts your singing time — sing the full window. With Listen mode on, the
+   phone registers that you're singing (green ring); otherwise another player taps
+   "singing!" to register it. Nothing registered when time runs out = miss.
 4. **Vote** — the group decides by majority (the singer doesn't vote).
    Approved = 🎤 token. Rejected or too late = 🔇 and you miss the next card.
 5. **Win** — depends on the mode.
@@ -37,7 +38,7 @@ the group is the game.
 ## Features
 
 - 2–10 players, radial grab zones with anti-camping lockout and "beat you by 0.04s" margin display
-- **Listen mode** — the phone hears when you start singing and stops the clock automatically. Volume-only (RMS metering), **no recording, nothing stored**; calibrates the room's ambient level and adapts as it goes. Live meter, adjustable sensitivity (Calm / Normal / Sensitive), and a manual button as fallback if the mic is denied or off.
+- **Listen mode** — the phone hears you sing and registers it (green ring) while the clock runs its full course; the vote opens when time is up, and a silent window is an automatic miss. Volume-only (RMS + peak metering), **no recording, nothing stored**; calibrates the room's ambient level and adapts as it goes. Live meter, adjustable sensitivity (Calm / Normal / Sensitive), and a manual button as fallback if the mic is denied or off.
 - Dutch (126 words) and English (146 words) decks, curated for singability — plus mixed play
 - Bilingual UI (Nederlands / English)
 - No repeated words per session; "sung words" list for settling disputes

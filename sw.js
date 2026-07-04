@@ -1,5 +1,5 @@
 /* Sing-a-Song service worker — cache-first, fully offline after first visit */
-const CACHE = "sing-a-song-v5";
+const CACHE = "sing-a-song-v6";
 const ASSETS = [
   "./",
   "./index.html",
