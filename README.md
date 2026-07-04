@@ -16,7 +16,8 @@ the group is the game.
 2. **A word appears** after a 3-2-1 countdown. Tap your own zone to grab the mic.
    Tap too soon and you sit this card out.
 3. **Sing** a real, existing song containing the word (variations allowed: WIN → WINNER)
-   before the timer runs out. Only *another* player may press "singing!" to stop the clock.
+   before the timer runs out. With Listen mode on, the phone hears you start and stops the
+   clock itself; otherwise another player taps "singing!" to stop it.
 4. **Vote** — the group decides by majority (the singer doesn't vote).
    Approved = 🎤 token. Rejected or too late = 🔇 and you miss the next card.
 5. **Win** — depends on the mode.
@@ -36,13 +37,14 @@ the group is the game.
 ## Features
 
 - 2–10 players, radial grab zones with anti-camping lockout and "beat you by 0.04s" margin display
+- **Listen mode** — the phone hears when you start singing and stops the clock automatically. Volume-only (RMS metering), **no recording, nothing stored**; calibrates the room's ambient level and adapts as it goes. Live meter, adjustable sensitivity (Calm / Normal / Sensitive), and a manual button as fallback if the mic is denied or off.
 - Dutch (126 words) and English (146 words) decks, curated for singability — plus mixed play
 - Bilingual UI (Nederlands / English)
 - No repeated words per session; "sung words" list for settling disputes
 - Pause menu: add or remove players mid-game (late arrivals welcome)
 - Session persists in `localStorage` — survives backgrounding and reloads, resume from the home screen
 - All sound effects synthesized with Web Audio (zero assets), haptics, screen wake-lock
-- Installable PWA, 100% offline, zero backend, no accounts, no permissions
+- Installable PWA, 100% offline, zero backend, no accounts. The only optional permission is the microphone for Listen mode — deny it and the manual button takes over.
 
 ## Tech
 
@@ -54,7 +56,12 @@ State machine: `home → setup → countdown → grab → sing → vote (→ ste
 
 ### Deploy
 
-Any static host works. For GitHub Pages: Settings → Pages → deploy from branch, done.
+Any static host works. This repo includes a GitHub Actions workflow
+(`.github/workflows/deploy-pages.yml`) that publishes to GitHub Pages on every push.
+One-time setup: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+
+> Listen mode needs the microphone, which browsers only allow over **HTTPS** (or
+> `localhost`). GitHub Pages is HTTPS, so it works there out of the box.
 
 ### Development
 

@@ -116,6 +116,17 @@ details.adv[open] summary::before{content:"▾ ";}
 #ring circle.track{stroke:var(--line);fill:none;}
 #ring circle.prog{stroke:var(--ice);fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;}
 #ringNum{font-family:'Bungee';font-size:34px;fill:var(--paper);}
+#ring circle.prog.loud{stroke:var(--good);}
+/* mic meter */
+#micMeter{display:none;flex-direction:column;align-items:center;gap:7px;width:min(300px,80vw);margin:2px 0 6px;}
+.meterTrack{position:relative;width:100%;height:16px;border-radius:9px;background:var(--panel);
+  border:1px solid var(--line);overflow:hidden;}
+.meterFill{height:100%;width:0%;border-radius:9px;background:linear-gradient(90deg,var(--ice),var(--sun));
+  transition:width .05s linear;}
+.meterFill.loud{background:linear-gradient(90deg,var(--good),#c9ff6b);}
+.meterMark{position:absolute;top:-2px;left:50%;width:3px;height:20px;background:var(--neon);border-radius:2px;}
+#micStatus{font-size:13px;color:var(--dim);min-height:18px;}
+#micStatus.hot{color:var(--good);font-weight:700;}
 /* vote / steal */
 .votebtns{display:flex;gap:14px;margin-top:22px;}
 .votebtns .btn{font-size:21px;padding:22px 24px;}
@@ -242,6 +253,18 @@ details.adv[open] summary::before{content:"▾ ";}
       <button data-v="15">15s</button>
       <button data-v="20">20s</button>
     </div>
+    <div class="opt" data-i18n="listenLbl"></div>
+    <div class="toggles">
+      <div class="tog" id="togMic"><div class="lbl"><span data-i18n="mic"></span><small data-i18n="micHint"></small></div><div class="sw"></div></div>
+    </div>
+    <div id="sensRow" style="display:none">
+      <div class="opt" data-i18n="sensLbl"></div>
+      <div class="seg" id="sensSeg">
+        <button data-v="low" data-i18n="sensLow"></button>
+        <button data-v="med" class="sel" data-i18n="sensMed"></button>
+        <button data-v="high" data-i18n="sensHigh"></button>
+      </div>
+    </div>
     <div class="opt" data-i18n="modifiers"></div>
     <div class="toggles">
       <div class="tog" id="togSteal"><div class="lbl"><span data-i18n="steal"></span><small data-i18n="stealHint"></small></div><div class="sw"></div></div>
@@ -281,9 +304,13 @@ details.adv[open] summary::before{content:"▾ ";}
     <circle class="prog" id="ringProg" cx="75" cy="75" r="64" stroke-width="10"/>
     <text id="ringNum" x="75" y="87" text-anchor="middle">10</text>
   </svg>
+  <div id="micMeter">
+    <div class="meterTrack"><div class="meterFill" id="meterFill"></div><div class="meterMark"></div></div>
+    <div id="micStatus"></div>
+  </div>
   <button class="btn display" id="singingBtn"></button>
   <button class="btn ghost" id="giveUpBtn"></button>
-  <div class="mutenote" data-i18n="judgeNote"></div>
+  <div class="mutenote" id="singNote" data-i18n="judgeNote"></div>
 </div>
 
 <!-- VOTE -->
@@ -417,6 +444,9 @@ nl:{
   hintQuick:r=>`${r} rondes — meeste 🎤 wint`,
   goalLbl:"Winnen bij 🎤 ×", roundsLbl:"Aantal rondes", advanced:"meer opties",
   grabTimeLbl:"Pak-tijd per kaart", singTimeLbl:"Zing-timer", off:"uit",
+  listenLbl:"Meezing-detectie",
+  mic:"🎙️ Luistermodus", micHint:"De telefoon hoort zelf wanneer je zingt (geen opname)",
+  sensLbl:"Gevoeligheid", sensLow:"Rustig", sensMed:"Normaal", sensHigh:"Gevoelig",
   modifiers:"Extra regels",
   steal:"😈 Stelen", stealHint:"Bij afkeuring mag een ander het woord proberen",
   solo:"🎤 Solo-artiest", soloHint:"Niemand mag meezingen of helpen",
@@ -426,6 +456,11 @@ nl:{
   getReady:"maak je klaar…", grabNow:"PAK 'M — tik je vak!",
   tooSoon:n=>`${n}: TE VROEG! 🙈`, nobody:"Niemand? Nieuwe kaart!",
   faster:(w,ms,l)=>`${w} was ${(ms/1000).toFixed(2)}s sneller dan ${l}!`,
+  micListening:"🎙️ luistert… begin te zingen!", micHeard:"gehoord! 🎶",
+  micCalibrating:"🎙️ microfoon kalibreren…",
+  micDenied:"Microfoon geweigerd — gebruik de knop hieronder.",
+  micUnavailable:"Geen microfoon — gebruik de knop hieronder.",
+  micReady:n=>`Microfoon klaar (${n})`, orTap:"…of tik hier",
   hasMic:"heeft de mic!", singPrompt:"Zing een echte songtekst met dit woord",
   singing:"ZINGT! 🎶", giveUp:"🙈 geeft op",
   judgeNote:"Alleen een ándere speler drukt op de knop zodra het zingen begint.",
@@ -450,6 +485,7 @@ nl:{
   <p><b>3. Zing</b> een écht bestaand liedje waar het woord in voorkomt (variaties mogen: ZON → ZONNETJE). Start binnen de timer!</p>
   <p><b>4. Stem</b> — de groep beslist of het telt. Goedgekeurd = 🎤. Afgekeurd of te laat = 🔇 en je mist de volgende kaart.</p>
   <p><b>5. Winnen</b> — Klassiek: eerste met het doel-aantal 🎤. Race: eerste over de finish. Knock-out: 2× 🔇 = af. Snel spel: meeste 🎤 na alle rondes.</p>
+  <p>🎙️ <b>Luistermodus</b> (aan by default): de telefoon hoort zelf wanneer je begint te zingen en stopt de klok — geen opname, alleen het volume. Zet 'm uit of pas de gevoeligheid aan bij "meer opties". De knop blijft altijd werken als terugval.</p>
   <p>🔁 Zelfde liedje twee keer zingen in één spel? De groep mag het afkeuren — check de lijst "gezongen woorden".</p>
   <p>👥 Grote groep (7+)? Een tablet in het midden werkt het lekkerst.</p>`,
   pauseTitle:"Pauze",
@@ -471,6 +507,9 @@ en:{
   hintQuick:r=>`${r} rounds — most 🎤 wins`,
   goalLbl:"Win at 🎤 ×", roundsLbl:"Rounds", advanced:"more options",
   grabTimeLbl:"Grab time per card", singTimeLbl:"Sing timer", off:"off",
+  listenLbl:"Sing detection",
+  mic:"🎙️ Listen mode", micHint:"The phone hears when you sing (no recording)",
+  sensLbl:"Sensitivity", sensLow:"Calm", sensMed:"Normal", sensHigh:"Sensitive",
   modifiers:"House rules",
   steal:"😈 Steal", stealHint:"On a rejection, another player may try the word",
   solo:"🎤 Solo artists", soloHint:"No help from the group",
@@ -480,6 +519,11 @@ en:{
   getReady:"get ready…", grabNow:"GRAB IT — tap your zone!",
   tooSoon:n=>`${n}: TOO SOON! 🙈`, nobody:"Nobody? New card!",
   faster:(w,ms,l)=>`${w} beat ${l} by ${(ms/1000).toFixed(2)}s!`,
+  micListening:"🎙️ listening… start singing!", micHeard:"heard you! 🎶",
+  micCalibrating:"🎙️ calibrating microphone…",
+  micDenied:"Microphone denied — use the button below.",
+  micUnavailable:"No microphone — use the button below.",
+  micReady:n=>`Microphone ready (${n})`, orTap:"…or tap here",
   hasMic:"has the mic!", singPrompt:"Sing a real song lyric containing this word",
   singing:"SINGING! 🎶", giveUp:"🙈 gives up",
   judgeNote:"Only another player presses the button once the singing starts.",
@@ -504,6 +548,7 @@ en:{
   <p><b>3. Sing</b> a real, existing song that contains the word (variations allowed: WIN → WINNER). Start before the timer runs out!</p>
   <p><b>4. Vote</b> — the group decides if it counts. Approved = 🎤. Rejected or too late = 🔇 and you miss the next card.</p>
   <p><b>5. Win</b> — Classic: first to the token goal. Race: first across the finish. Knockout: 2× 🔇 = out. Quick play: most 🎤 after all rounds.</p>
+  <p>🎙️ <b>Listen mode</b> (on by default): the phone hears when you start singing and stops the clock — no recording, only loudness. Turn it off or tune the sensitivity under "more options". The button always works as a fallback.</p>
   <p>🔁 Same song twice in one game? The group may reject it — check the "sung words" list.</p>
   <p>👥 Big group (7+)? A tablet in the middle works best.</p>`,
   pauseTitle:"Paused",
@@ -523,7 +568,8 @@ function t(key, ...a){ const v = (STR[prefs.lang]||STR.nl)[key]; return typeof v
 const S = {
   players: [],            // {name,color,tokens,mutes,space,mutedNext,lockedCard,deadRound,out}
   settings: { deckMode:"nl", mode:"classic", goal:5, rounds:15, grabTime:15, singSecs:10,
-              steal:false, solo:false, volume:false },
+              steal:false, solo:false, volume:false, mic:true, micSens:"med" },
+  micOn: false,           // mic actually running this session
   deck: [], word: "",
   grabber: -1, stealer: -1, stealing: false,
   roundsPlayed: 0, history: [],
@@ -571,9 +617,70 @@ const snd = {
   no(){ [392,330,262,196].forEach((f,i)=>tone(f,.22,{type:"sawtooth",vol:.16,when:i*.14})); },
   early(){ tone(200,.25,{type:"square",vol:.2,slide:-80}); },
   fanfare(){ [523,523,659,784,1046,784,1046].forEach((f,i)=>tone(f,.22,{type:"triangle",vol:.2,when:i*.13})); },
-  boom(){ tone(90,.7,{type:"sawtooth",vol:.3,slide:-40}); }
+  boom(){ tone(90,.7,{type:"sawtooth",vol:.3,slide:-40}); },
+  heard(){ tone(660,.12,{type:"triangle",vol:.18}); tone(990,.15,{type:"triangle",vol:.18,when:.09}); }
 };
 function buzz(pat){ try{ navigator.vibrate && navigator.vibrate(pat); }catch(e){} }
+
+/* ================= MIC LISTENING (volume-only, no recording) ================= */
+/* Live RMS metering: a rolling noise floor is tracked while quiet; sustained
+   sound above a sensitivity-scaled threshold auto-stops the sing clock.
+   Nothing is ever recorded or stored — only the instantaneous loudness. */
+const SENS = { // {mult over floor, absolute floor delta, minimum threshold}
+  low:  { mult:3.6, add:0.060, min:0.075 },
+  med:  { mult:2.8, add:0.038, min:0.050 },
+  high: { mult:2.0, add:0.022, min:0.032 }
+};
+const MIC_SUSTAIN_MS = 320;   // must stay loud this long to count as "singing"
+const mic = { stream:null, analyser:null, data:null, floor:0.02, level:0,
+              ready:false, denied:false, calibrating:false };
+
+async function micInit(){
+  if(mic.ready || mic.denied) return mic.ready;
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ mic.denied = true; return false; }
+  try{
+    mic.stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:false, noiseSuppression:false, autoGainControl:false } });
+    const c = ac();
+    const src = c.createMediaStreamSource(mic.stream);
+    mic.analyser = c.createAnalyser();
+    mic.analyser.fftSize = 1024;
+    mic.data = new Float32Array(mic.analyser.fftSize);
+    src.connect(mic.analyser);          // NOT connected to destination → no feedback, no playback
+    mic.ready = true; mic.floor = 0.02;
+    S.micOn = true;
+    micCalibrate();
+    return true;
+  }catch(e){ mic.denied = true; S.micOn = false; return false; }
+}
+function micRMS(){
+  if(!mic.analyser) return 0;
+  mic.analyser.getFloatTimeDomainData(mic.data);
+  let sum = 0;
+  for(let i=0;i<mic.data.length;i++){ const v = mic.data[i]; sum += v*v; }
+  return Math.sqrt(sum / mic.data.length);
+}
+function micCalibrate(){
+  // sample ~800ms of ambient sound → noise floor
+  mic.calibrating = true;
+  const t0 = performance.now(); let acc = 0, n = 0;
+  (function loop(){
+    if(!mic.ready) { mic.calibrating = false; return; }
+    acc += micRMS(); n++;
+    if(performance.now()-t0 < 800){ requestAnimationFrame(loop); }
+    else { mic.floor = Math.max(0.008, acc/Math.max(1,n)); mic.calibrating = false; }
+  })();
+}
+function micThreshold(){
+  const s = SENS[S.settings.micSens] || SENS.med;
+  let thr = Math.max(mic.floor * s.mult, mic.floor + s.add, s.min);
+  if(S.settings.volume) thr *= 1.5;   // "Full volume" modifier demands more
+  return thr;
+}
+function micStop(){
+  try{ if(mic.stream) mic.stream.getTracks().forEach(tr=>tr.stop()); }catch(e){}
+  mic.stream = null; mic.analyser = null; mic.ready = false; mic.denied = false;
+  mic.level = 0; S.micOn = false;
+}
 
 /* ================= HELPERS ================= */
 const $ = id => document.getElementById(id);
@@ -694,10 +801,13 @@ segInit("goalSeg",  v => { S.settings.goal = +v; updateModeHint(); });
 segInit("roundsSeg",v => { S.settings.rounds = +v; updateModeHint(); });
 segInit("grabSeg",  v => { S.settings.grabTime = +v; });
 segInit("singSeg",  v => { S.settings.singSecs = +v; });
-function togInit(id, key){
-  $(id).onclick = () => { S.settings[key] = !S.settings[key]; $(id).classList.toggle("on", S.settings[key]); };
+segInit("sensSeg",  v => { S.settings.micSens = v; });
+function togInit(id, key, after){
+  $(id).onclick = () => { S.settings[key] = !S.settings[key]; $(id).classList.toggle("on", S.settings[key]); if(after) after(); };
 }
 togInit("togSteal","steal"); togInit("togSolo","solo"); togInit("togVolume","volume");
+togInit("togMic","mic", updateMicUI);
+function updateMicUI(){ $("sensRow").style.display = S.settings.mic ? "" : "none"; }
 
 function updateModeUI(){
   $("goalOpt").style.display   = S.settings.mode==="classic" ? "" : "none";
@@ -717,9 +827,12 @@ function restoreSetupPrefs(){
   segSet("deckSeg", S.settings.deckMode); segSet("modeSeg", S.settings.mode);
   segSet("goalSeg", S.settings.goal); segSet("roundsSeg", S.settings.rounds);
   segSet("grabSeg", S.settings.grabTime); segSet("singSeg", S.settings.singSecs);
+  segSet("sensSeg", S.settings.micSens);
   $("togSteal").classList.toggle("on", S.settings.steal);
   $("togSolo").classList.toggle("on", S.settings.solo);
   $("togVolume").classList.toggle("on", S.settings.volume);
+  $("togMic").classList.toggle("on", S.settings.mic);
+  updateMicUI();
   updateModeUI();
 }
 $("backHome").onclick = () => { refreshHome(); show("scr-home"); };
@@ -730,6 +843,7 @@ $("startBtn").onclick = () => {
   prefs.setup = { ...S.settings }; savePrefs();
   ac(); buzz(20);
   S.roundsPlayed = 0; S.history = []; S.overtime = false;
+  if(S.settings.mic) micInit();     // request permission on this gesture; calibrates in background
   buildDeck(); keepAwake(); startRound();
 };
 
@@ -855,38 +969,70 @@ function startSing(){
   const chips = $("singChips"); chips.innerHTML = "";
   if(S.settings.solo){ const c=document.createElement("span"); c.className="chip"; c.textContent=t("solo"); chips.appendChild(c); }
   if(S.settings.volume){ const c=document.createElement("span"); c.className="chip"; c.textContent=t("volume"); chips.appendChild(c); }
-  const secs = S.settings.singSecs;
-  if(secs === 0){
-    $("ring").style.display = "none";
-    const c=document.createElement("span"); c.className="chip"; c.textContent="⏱ "+t("noTimer"); chips.appendChild(c);
-    return;
+
+  const micActive = S.settings.mic && mic.ready;
+  const meter = $("micMeter"), fill = $("meterFill"), status = $("micStatus"), prog = $("ringProg");
+  meter.style.display = micActive ? "flex" : "none";
+  fill.classList.remove("loud"); status.classList.remove("hot");
+  prog.classList.remove("loud");
+  if(micActive){ status.textContent = t("micListening"); $("singNote").textContent = t("micHint"); }
+  else{
+    $("singNote").textContent = S.settings.mic ? (mic.denied ? t("micDenied") : t("micUnavailable")) : t("judgeNote");
   }
-  $("ring").style.display = "";
-  const prog = $("ringProg"), circ = 2*Math.PI*64;
-  prog.style.strokeDasharray = circ;
-  prog.style.strokeDashoffset = 0;
+
+  const secs = S.settings.singSecs;
+  const hasTimer = secs > 0;
+  $("ring").style.display = hasTimer ? "" : "none";
+  if(!hasTimer && !micActive){
+    const c=document.createElement("span"); c.className="chip"; c.textContent="⏱ "+t("noTimer"); chips.appendChild(c);
+  }
+  const circ = 2*Math.PI*64;
+  prog.style.strokeDasharray = circ; prog.style.strokeDashoffset = 0;
   const t0 = performance.now(), total = secs*1000;
-  let lastWhole = secs;
+  let lastWhole = secs, lastNow = t0, loudMs = 0;
+  $("ringNum").textContent = secs;
+
   function frame(now){
     if(S.phase !== "sing") return;
-    const left = Math.max(0, total-(now-t0));
-    prog.style.strokeDashoffset = circ * (1 - left/total);
-    const s = Math.ceil(left/1000);
-    $("ringNum").textContent = s;
-    if(s !== lastWhole){ lastWhole = s; if(s<=3 && s>0) snd.clocktick(); }
-    if(left<=0){ singFail(t("tooLate")); return; }
+    const dt = now - lastNow; lastNow = now;
+    // --- timer ---
+    if(hasTimer){
+      const left = Math.max(0, total-(now-t0));
+      prog.style.strokeDashoffset = circ * (1 - left/total);
+      const s = Math.ceil(left/1000);
+      $("ringNum").textContent = s;
+      if(s !== lastWhole){ lastWhole = s; if(s<=3 && s>0) snd.clocktick(); }
+      if(left<=0){ singFail(t("tooLate")); return; }
+    }
+    // --- mic detection ---
+    if(micActive){
+      const rms = (mic.testLevel != null) ? mic.testLevel : micRMS();
+      mic.level = mic.level*0.6 + rms*0.4;
+      const thr = micThreshold();
+      if(mic.level < thr) mic.floor = mic.floor*0.985 + mic.level*0.015;  // adapt when quiet
+      const loud = mic.level > thr;
+      fill.style.width = Math.min(100, mic.level/(thr*2)*100).toFixed(1) + "%";
+      fill.classList.toggle("loud", loud);
+      prog.classList.toggle("loud", loud);
+      loudMs = loud ? loudMs + dt : Math.max(0, loudMs - dt*0.6);
+      if(loudMs >= MIC_SUSTAIN_MS){
+        status.textContent = t("micHeard"); status.classList.add("hot");
+        stopToVote(true); return;
+      }
+    }
     singRAF = requestAnimationFrame(frame);
   }
-  $("ringNum").textContent = secs;
   singRAF = requestAnimationFrame(frame);
 }
-$("singingBtn").onclick = () => {
+function stopToVote(){
   if(S.phase !== "sing") return;
   S.phase = "vote";
+  snd.heard(); buzz(40);
   show("scr-vote");
   $("voteName").textContent = currentSinger().name;
   $("voteWord").textContent = S.word;
-};
+}
+$("singingBtn").onclick = () => stopToVote(false);   // manual override / fallback
 $("giveUpBtn").onclick = () => {
   if(S.phase !== "sing") return;
   singFail(t("gaveUp", currentSinger().name));
@@ -1075,7 +1221,7 @@ $("pauseHist").onclick = () => showHistory();
 $("pauseQuit").onclick = () => {
   if(!confirm(t("quitConfirm"))) return;
   overlay("ov-pause", false);
-  clearSession();
+  clearSession(); micStop();
   S.phase = "home"; refreshHome(); show("scr-home");
 };
 
@@ -1122,10 +1268,13 @@ if(location.protocol.startsWith("http") && "serviceWorker" in navigator){
 }
 
 /* ================= INIT ================= */
-window.__sas = S; // debug/test handle
+window.__sas = S; window.__mic = mic; // debug/test handles
 
 $("sndToggle").textContent = prefs.sound ? "🔊" : "🔇";
 restoreSetupPrefs();
+$("togMic").classList.toggle("on", S.settings.mic);   // sync mic toggle even on a fresh install
+segSet("sensSeg", S.settings.micSens);
+updateMicUI();
 applyLang();
 refreshHome();
 </script>
