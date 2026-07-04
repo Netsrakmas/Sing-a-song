@@ -127,6 +127,7 @@ details.adv[open] summary::before{content:"▾ ";}
 .meterMark{position:absolute;top:-2px;left:50%;width:3px;height:20px;background:var(--neon);border-radius:2px;}
 #micStatus{font-size:13px;color:var(--dim);min-height:18px;}
 #micStatus.hot{color:var(--good);font-weight:700;}
+#micDbg{font-size:11px;color:var(--dim);opacity:.65;font-variant-numeric:tabular-nums;min-height:14px;}
 /* vote / steal */
 .votebtns{display:flex;gap:14px;margin-top:22px;}
 .votebtns .btn{font-size:21px;padding:22px 24px;}
@@ -307,6 +308,7 @@ details.adv[open] summary::before{content:"▾ ";}
   <div id="micMeter">
     <div class="meterTrack"><div class="meterFill" id="meterFill"></div><div class="meterMark"></div></div>
     <div id="micStatus"></div>
+    <div id="micDbg"></div>
   </div>
   <button class="btn display" id="singingBtn"></button>
   <button class="btn ghost" id="giveUpBtn"></button>
@@ -628,15 +630,18 @@ function buzz(pat){ try{ navigator.vibrate && navigator.vibrate(pat); }catch(e){
 /* Live RMS metering: a rolling noise floor is tracked while quiet; sustained
    sound above a sensitivity-scaled threshold auto-stops the sing clock.
    Nothing is ever recorded or stored — only the instantaneous loudness. */
+/* Tuning ladder (playtest iteration): "Normaal" is deliberately VERY sensitive,
+   "Rustig" equals the previous — too hard to trigger — calibration. Playtest on
+   Normaal, step to Rustig if chatter over-triggers, then pin a value in between. */
 const SENS = { // {mult over floor, absolute floor delta, minimum threshold}
-  low:  { mult:1.8, add:0.008, min:0.012 },   // "Rustig" — needs a firm voice
-  med:  { mult:1.4, add:0.003, min:0.006 },   // "Normaal" — singing from arm's length registers
-  high: { mult:1.25, add:0.002, min:0.004 }   // "Gevoelig" — even a soft voice registers
+  low:  { mult:1.4,  add:0.003,  min:0.006 },  // "Rustig" — the old bar (firm voice)
+  med:  { mult:1.2,  add:0.0015, min:0.003 },  // "Normaal" — very sensitive test setting
+  high: { mult:1.1,  add:0.0008, min:0.002 }   // "Gevoelig" — extreme: barely above the floor
 };
-const FLOOR_MIN = 0.002, FLOOR_MAX = 0.02;    // clamp so a noisy calibration can't inflate the bar
+const FLOOR_MIN = 0.0015, FLOOR_MAX = 0.012;  // clamp so a noisy calibration can't inflate the bar
 const MIC_SUSTAIN_MS = 250;   // must stay loud this long to count as "singing"
 const MIC_GRACE_MS = 400;     // ignore the first moments (own grab-airhorn tail, screen tap)
-const mic = { stream:null, analyser:null, data:null, floor:0.008, level:0,
+const mic = { stream:null, analyser:null, data:null, floor:0.005, level:0,
               ready:false, denied:false, calibrating:false };
 const clampFloor = v => Math.min(FLOOR_MAX, Math.max(FLOOR_MIN, v));
 
@@ -660,12 +665,18 @@ async function micInit(){
     return true;
   }catch(e){ mic.denied = true; S.micOn = false; return false; }
 }
-function micRMS(){
+function micSignal(){
+  // RMS + peak combined: singing is peaky (high crest factor), steady room hum
+  // is not — taking max(rms, peak*0.35) lets a voice register at a distance
+  // without dragging the noise floor up along with it.
   if(!mic.analyser) return 0;
   mic.analyser.getFloatTimeDomainData(mic.data);
-  let sum = 0;
-  for(let i=0;i<mic.data.length;i++){ const v = mic.data[i]; sum += v*v; }
-  return Math.sqrt(sum / mic.data.length);
+  let sum = 0, peak = 0;
+  for(let i=0;i<mic.data.length;i++){
+    const v = mic.data[i]; sum += v*v;
+    const a = v<0 ? -v : v; if(a>peak) peak = a;
+  }
+  return Math.max(Math.sqrt(sum / mic.data.length), peak*0.35);
 }
 function micCalibrate(){
   // sample ~800ms of ambient sound → noise floor
@@ -673,7 +684,7 @@ function micCalibrate(){
   const t0 = performance.now(); let acc = 0, n = 0;
   (function loop(){
     if(!mic.ready) { mic.calibrating = false; return; }
-    acc += micRMS(); n++;
+    acc += micSignal(); n++;
     if(performance.now()-t0 < 800){ requestAnimationFrame(loop); }
     else { mic.floor = clampFloor(acc/Math.max(1,n)); mic.calibrating = false; }
   })();
@@ -1011,7 +1022,8 @@ function startSing(){
   const circ = 2*Math.PI*64;
   prog.style.strokeDasharray = circ; prog.style.strokeDashoffset = 0;
   const t0 = performance.now(), total = secs*1000;
-  let lastWhole = secs, lastNow = t0, loudMs = 0;
+  let lastWhole = secs, lastNow = t0, loudMs = 0, lastDbg = 0;
+  const dbg = $("micDbg"); dbg.textContent = "";
   $("ringNum").textContent = secs;
 
   function frame(now){
@@ -1028,7 +1040,7 @@ function startSing(){
     }
     // --- mic detection ---
     if(micActive){
-      const rms = (mic.testLevel != null) ? mic.testLevel : micRMS();
+      const rms = (mic.testLevel != null) ? mic.testLevel : micSignal();
       mic.level = mic.level*0.6 + rms*0.4;
       const thr = micThreshold();
       if(mic.level < thr) mic.floor = clampFloor(mic.floor*0.985 + mic.level*0.015);  // adapt when quiet
@@ -1036,6 +1048,10 @@ function startSing(){
       fill.style.width = Math.min(100, mic.level/(thr*2)*100).toFixed(1) + "%";
       fill.classList.toggle("loud", loud);
       prog.classList.toggle("loud", loud);
+      if(now - lastDbg > 150){ // live tuning readout for playtests
+        lastDbg = now;
+        dbg.textContent = `mic ${mic.level.toFixed(4)} · trig ${thr.toFixed(4)}`;
+      }
       if(now - t0 > MIC_GRACE_MS) loudMs = loud ? loudMs + dt : Math.max(0, loudMs - dt*0.6);
       if(loudMs >= MIC_SUSTAIN_MS){
         status.textContent = t("micHeard"); status.classList.add("hot");
