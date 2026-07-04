@@ -627,13 +627,15 @@ function buzz(pat){ try{ navigator.vibrate && navigator.vibrate(pat); }catch(e){
    sound above a sensitivity-scaled threshold auto-stops the sing clock.
    Nothing is ever recorded or stored — only the instantaneous loudness. */
 const SENS = { // {mult over floor, absolute floor delta, minimum threshold}
-  low:  { mult:3.6, add:0.060, min:0.075 },
-  med:  { mult:2.8, add:0.038, min:0.050 },
-  high: { mult:2.0, add:0.022, min:0.032 }
+  low:  { mult:2.3, add:0.016, min:0.022 },   // "Rustig" — needs a firm voice
+  med:  { mult:1.7, add:0.006, min:0.014 },   // "Normaal" — ordinary singing crosses it comfortably
+  high: { mult:1.4, add:0.004, min:0.009 }    // "Gevoelig" — even a soft voice registers
 };
-const MIC_SUSTAIN_MS = 320;   // must stay loud this long to count as "singing"
-const mic = { stream:null, analyser:null, data:null, floor:0.02, level:0,
+const FLOOR_MIN = 0.006, FLOOR_MAX = 0.04;    // clamp so a noisy calibration can't inflate the bar
+const MIC_SUSTAIN_MS = 300;   // must stay loud this long to count as "singing"
+const mic = { stream:null, analyser:null, data:null, floor:0.015, level:0,
               ready:false, denied:false, calibrating:false };
+const clampFloor = v => Math.min(FLOOR_MAX, Math.max(FLOOR_MIN, v));
 
 async function micInit(){
   if(mic.ready || mic.denied) return mic.ready;
@@ -646,7 +648,7 @@ async function micInit(){
     mic.analyser.fftSize = 1024;
     mic.data = new Float32Array(mic.analyser.fftSize);
     src.connect(mic.analyser);          // NOT connected to destination → no feedback, no playback
-    mic.ready = true; mic.floor = 0.02;
+    mic.ready = true; mic.floor = 0.015;
     S.micOn = true;
     micCalibrate();
     return true;
@@ -667,7 +669,7 @@ function micCalibrate(){
     if(!mic.ready) { mic.calibrating = false; return; }
     acc += micRMS(); n++;
     if(performance.now()-t0 < 800){ requestAnimationFrame(loop); }
-    else { mic.floor = Math.max(0.008, acc/Math.max(1,n)); mic.calibrating = false; }
+    else { mic.floor = clampFloor(acc/Math.max(1,n)); mic.calibrating = false; }
   })();
 }
 function micThreshold(){
@@ -1009,7 +1011,7 @@ function startSing(){
       const rms = (mic.testLevel != null) ? mic.testLevel : micRMS();
       mic.level = mic.level*0.6 + rms*0.4;
       const thr = micThreshold();
-      if(mic.level < thr) mic.floor = mic.floor*0.985 + mic.level*0.015;  // adapt when quiet
+      if(mic.level < thr) mic.floor = clampFloor(mic.floor*0.985 + mic.level*0.015);  // adapt when quiet
       const loud = mic.level > thr;
       fill.style.width = Math.min(100, mic.level/(thr*2)*100).toFixed(1) + "%";
       fill.classList.toggle("loud", loud);
@@ -1268,7 +1270,7 @@ if(location.protocol.startsWith("http") && "serviceWorker" in navigator){
 }
 
 /* ================= INIT ================= */
-window.__sas = S; window.__mic = mic; // debug/test handles
+window.__sas = S; window.__mic = mic; window.__micThreshold = micThreshold; // debug/test handles
 
 $("sndToggle").textContent = prefs.sound ? "🔊" : "🔇";
 restoreSetupPrefs();
