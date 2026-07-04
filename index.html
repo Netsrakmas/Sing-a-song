@@ -455,6 +455,7 @@ nl:{
   tableNote:"Leg de telefoon plat in het midden. Iedereen krijgt een eigen vak. Te vroeg tikken = deze kaart overslaan!",
   getReady:"maak je klaar…", grabNow:"PAK 'M — tik je vak!",
   tooSoon:n=>`${n}: TE VROEG! 🙈`, nobody:"Niemand? Nieuwe kaart!",
+  allMuted:"Iedereen 🔇? Iedereen doet weer mee!",
   faster:(w,ms,l)=>`${w} was ${(ms/1000).toFixed(2)}s sneller dan ${l}!`,
   micListening:"🎙️ luistert… begin te zingen!", micHeard:"gehoord! 🎶",
   micCalibrating:"🎙️ microfoon kalibreren…",
@@ -518,6 +519,7 @@ en:{
   tableNote:"Lay the phone flat in the middle. Everyone gets their own zone. Tap too soon and you skip this card!",
   getReady:"get ready…", grabNow:"GRAB IT — tap your zone!",
   tooSoon:n=>`${n}: TOO SOON! 🙈`, nobody:"Nobody? New card!",
+  allMuted:"Everyone muted? All back in!",
   faster:(w,ms,l)=>`${w} beat ${l} by ${(ms/1000).toFixed(2)}s!`,
   micListening:"🎙️ listening… start singing!", micHeard:"heard you! 🎶",
   micCalibrating:"🎙️ calibrating microphone…",
@@ -627,13 +629,14 @@ function buzz(pat){ try{ navigator.vibrate && navigator.vibrate(pat); }catch(e){
    sound above a sensitivity-scaled threshold auto-stops the sing clock.
    Nothing is ever recorded or stored — only the instantaneous loudness. */
 const SENS = { // {mult over floor, absolute floor delta, minimum threshold}
-  low:  { mult:2.3, add:0.016, min:0.022 },   // "Rustig" — needs a firm voice
-  med:  { mult:1.7, add:0.006, min:0.014 },   // "Normaal" — ordinary singing crosses it comfortably
-  high: { mult:1.4, add:0.004, min:0.009 }    // "Gevoelig" — even a soft voice registers
+  low:  { mult:1.8, add:0.008, min:0.012 },   // "Rustig" — needs a firm voice
+  med:  { mult:1.4, add:0.003, min:0.006 },   // "Normaal" — singing from arm's length registers
+  high: { mult:1.25, add:0.002, min:0.004 }   // "Gevoelig" — even a soft voice registers
 };
-const FLOOR_MIN = 0.006, FLOOR_MAX = 0.04;    // clamp so a noisy calibration can't inflate the bar
-const MIC_SUSTAIN_MS = 300;   // must stay loud this long to count as "singing"
-const mic = { stream:null, analyser:null, data:null, floor:0.015, level:0,
+const FLOOR_MIN = 0.002, FLOOR_MAX = 0.02;    // clamp so a noisy calibration can't inflate the bar
+const MIC_SUSTAIN_MS = 250;   // must stay loud this long to count as "singing"
+const MIC_GRACE_MS = 400;     // ignore the first moments (own grab-airhorn tail, screen tap)
+const mic = { stream:null, analyser:null, data:null, floor:0.008, level:0,
               ready:false, denied:false, calibrating:false };
 const clampFloor = v => Math.min(FLOOR_MAX, Math.max(FLOOR_MIN, v));
 
@@ -641,14 +644,17 @@ async function micInit(){
   if(mic.ready || mic.denied) return mic.ready;
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ mic.denied = true; return false; }
   try{
-    mic.stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:false, noiseSuppression:false, autoGainControl:false } });
+    // AGC ON: the phone lies flat in the middle, singers are an arm's length away —
+    // auto gain boosts a distant voice into range. EC ON so the app's own speaker
+    // sounds don't trip the (now low) threshold. NS off: it can eat sustained notes.
+    mic.stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:false, autoGainControl:true } });
     const c = ac();
     const src = c.createMediaStreamSource(mic.stream);
     mic.analyser = c.createAnalyser();
     mic.analyser.fftSize = 1024;
     mic.data = new Float32Array(mic.analyser.fftSize);
     src.connect(mic.analyser);          // NOT connected to destination → no feedback, no playback
-    mic.ready = true; mic.floor = 0.015;
+    mic.ready = true; mic.floor = 0.008;
     S.micOn = true;
     micCalibrate();
     return true;
@@ -902,9 +908,15 @@ function startRound(){
     p.deadRound = p.mutedNext && !p.out;   // sit out exactly this card
     p.mutedNext = false;
   });
+  // If EVERY playable player is muted (e.g. grabber + stealer both failed the
+  // same card), nobody could grab and the game would stall — forgive them all.
+  const activeP = S.players.filter(p => !p.out);
+  const allMuted = activeP.length > 0 && activeP.every(p => p.deadRound);
+  if(allMuted) activeP.forEach(p => { p.deadRound = false; });
   S.phase = "countdown";
   saveSession();
   show("scr-arena"); drawZones();
+  if(allMuted) flash(t("allMuted"));
   $("word").style.display = "none";
   $("cd").style.display = "block";
   $("discHint").textContent = t("getReady");
@@ -916,6 +928,14 @@ function startRound(){
     else{
       clearInterval(cdIv); cdIv = null;
       if(S.phase!=="countdown") return;
+      // nobody left who can grab (all early-tap locked/muted)? skip straight
+      // to a fresh card instead of stalling — vital when grab time is set to ∞
+      if(!S.players.some(p => !p.out && !p.deadRound && !p.lockedCard)){
+        S.phase = "between";
+        flash(t("nobody")); snd.no();
+        setTimeout(startRound, 900);
+        return;
+      }
       S.phase = "grab"; S.grabTimeStamp = 0;
       $("cd").style.display = "none";
       $("word").textContent = S.word; $("word").style.display = "block";
@@ -1016,7 +1036,7 @@ function startSing(){
       fill.style.width = Math.min(100, mic.level/(thr*2)*100).toFixed(1) + "%";
       fill.classList.toggle("loud", loud);
       prog.classList.toggle("loud", loud);
-      loudMs = loud ? loudMs + dt : Math.max(0, loudMs - dt*0.6);
+      if(now - t0 > MIC_GRACE_MS) loudMs = loud ? loudMs + dt : Math.max(0, loudMs - dt*0.6);
       if(loudMs >= MIC_SUSTAIN_MS){
         status.textContent = t("micHeard"); status.classList.add("hot");
         stopToVote(true); return;
