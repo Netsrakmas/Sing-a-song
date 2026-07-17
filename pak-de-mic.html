@@ -59,15 +59,25 @@ h1.logo{font-size:clamp(38px,11vw,64px);line-height:.95;color:var(--volt);
   width:min(62vw,300px);height:min(62vw,300px);border-radius:50%;
   background:radial-gradient(circle at 50% 35%, #2c2152, #16102a 75%);
   border:5px solid var(--volt);box-shadow:0 0 40px rgba(255,210,63,.45),inset 0 0 30px rgba(0,0,0,.6);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  pointer-events:none;padding:14px;
+  pointer-events:none;
 }
-#cd{font-size:clamp(60px,20vw,96px);color:var(--ice);text-shadow:0 0 20px rgba(53,224,220,.6);}
-#word{font-size:clamp(30px,9vw,52px);color:var(--volt);line-height:1;word-break:break-word;
+/* the disc shows its content twice: one half rotated 180° so players on
+   the far side of the table can read the word/countdown too */
+.discFace{
+  position:absolute;left:0;right:0;height:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  padding:6px 24px;
+}
+.discFace.flip{top:0;transform:rotate(180deg);}
+.discFace:not(.flip){bottom:0;}
+.cd{font-size:clamp(34px,11vw,54px);color:var(--ice);text-shadow:0 0 20px rgba(53,224,220,.6);}
+.word{font-size:clamp(20px,6.5vw,32px);color:var(--volt);line-height:1;word-break:break-word;
   text-shadow:0 0 18px rgba(255,210,63,.5);}
-#discHint{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.15em;}
-#flash{position:absolute;left:50%;top:12%;transform:translateX(-50%);background:var(--hot);color:#fff;
+.discHint{color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:.12em;}
+.flash{position:absolute;left:50%;background:var(--hot);color:#fff;
   padding:8px 16px;border-radius:12px;font-weight:700;display:none;white-space:nowrap;z-index:5;}
+#flash{top:10%;transform:translateX(-50%) rotate(180deg);}
+#flashB{bottom:10%;transform:translateX(-50%);}
 /* sing */
 .bigword{font-size:clamp(44px,14vw,84px);color:var(--volt);line-height:1;margin:6px 0 2px;
   text-shadow:0 0 24px rgba(255,210,63,.5);}
@@ -130,11 +140,19 @@ h1.logo{font-size:clamp(38px,11vw,64px);line-height:.95;color:var(--volt);
   <div id="arena">
     <svg id="zones"></svg>
     <div id="centerDisc">
-      <div id="cd" class="display">3</div>
-      <div id="word" class="display" style="display:none"></div>
-      <div id="discHint">maak je klaar…</div>
+      <div class="discFace flip">
+        <div class="cd display">3</div>
+        <div class="word display" style="display:none"></div>
+        <div class="discHint">maak je klaar…</div>
+      </div>
+      <div class="discFace">
+        <div class="cd display">3</div>
+        <div class="word display" style="display:none"></div>
+        <div class="discHint">maak je klaar…</div>
+      </div>
     </div>
-    <div id="flash"></div>
+    <div id="flash" class="flash"></div>
+    <div id="flashB" class="flash"></div>
   </div>
 </div>
 
@@ -296,10 +314,11 @@ function drawZones(){
     if(p.deadRound || p.lockedCard) path.classList.add("dead");
     path.addEventListener("pointerdown", onZoneTap, {passive:false});
     svg.appendChild(path);
-    // label at mid-angle, rotated to face outward
+    // label at mid-angle, rotated so it reads upright for the player
+    // sitting at that wedge (glyph tops point away from them)
     const am = (a0+a1)/2, lr = Math.min(W,H)*0.40;
     const lx = cx + lr*Math.cos(am), ly = cy + lr*Math.sin(am);
-    let deg = am*180/Math.PI + 90; if(deg>90 && deg<270) deg -= 180;
+    const deg = am*180/Math.PI - 90;
     const t = document.createElementNS("http://www.w3.org/2000/svg","text");
     t.setAttribute("x", lx); t.setAttribute("y", ly);
     t.setAttribute("text-anchor","middle");
@@ -312,9 +331,13 @@ function drawZones(){
 addEventListener("resize", ()=>{ if(S.phase==="countdown"||S.phase==="grab") drawZones(); });
 
 function flash(msg){
-  const f = $("flash"); f.textContent = msg; f.style.display = "block";
-  clearTimeout(f._t); f._t = setTimeout(()=>f.style.display="none", 1400);
+  for(const f of [$("flash"), $("flashB")]){
+    f.textContent = msg; f.style.display = "block";
+    clearTimeout(f._t); f._t = setTimeout(()=>f.style.display="none", 1400);
+  }
 }
+// update both disc faces (normal + 180°-rotated copy) at once
+function disc(cls, fn){ document.querySelectorAll("#centerDisc ."+cls).forEach(fn); }
 
 /* ---------- round flow ---------- */
 function startRound(){
@@ -328,21 +351,21 @@ function startRound(){
   });
   S.phase = "countdown";
   show("scr-arena"); drawZones();
-  $("word").style.display = "none";
-  $("cd").style.display = "block";
-  $("discHint").textContent = "maak je klaar…";
+  disc("word", el => el.style.display = "none");
+  disc("cd", el => el.style.display = "block");
+  disc("discHint", el => el.textContent = "maak je klaar…");
   let c = 3;
-  $("cd").textContent = c; snd.tick();
+  disc("cd", el => el.textContent = c); snd.tick();
   const iv = setInterval(()=>{
     c--;
-    if(c>0){ $("cd").textContent = c; snd.tick(); }
+    if(c>0){ disc("cd", el => el.textContent = c); snd.tick(); }
     else{
       clearInterval(iv);
       // reveal
       S.phase = "grab"; S.grabOpen = true; S.grabTime = 0;
-      $("cd").style.display = "none";
-      $("word").textContent = S.word; $("word").style.display = "block";
-      $("discHint").textContent = "PAK DE MIC — tik je vak!";
+      disc("cd", el => el.style.display = "none");
+      disc("word", el => { el.textContent = S.word; el.style.display = "block"; });
+      disc("discHint", el => el.textContent = "PAK DE MIC — tik je vak!");
       snd.reveal();
       drawZones();
       // nobody grabs → new card
