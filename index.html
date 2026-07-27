@@ -105,6 +105,31 @@ details.adv[open] summary::before{content:"▾ ";}
 #flash{position:absolute;left:50%;top:12%;transform:translateX(-50%);background:var(--neon);color:#fff;
   padding:8px 16px;border-radius:12px;font-weight:700;display:none;white-space:nowrap;z-index:5;max-width:92vw;
   overflow:hidden;text-overflow:ellipsis;}
+/* prop mode — a real object is grabbed; the phone only registers who got it */
+#scr-arena.prop #zones{display:none;}
+#scr-arena.prop #arena{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  overflow-y:auto;padding:calc(52px + env(safe-area-inset-top,0px)) 14px 22px;}
+/* auto margins: centred when it fits, scrolls from the top when it doesn't */
+#scr-arena.prop #centerDisc{position:static;transform:none;flex:none;margin-top:auto;
+  width:min(52vw,230px);height:min(52vw,230px);}
+/* smaller disc than tap mode → step the word down so the longest entries
+   (REGENBOOG, BEAUTIFUL — 9 chars) still fit on one line */
+#scr-arena.prop #word{font-size:clamp(19px,6vw,32px);}
+#propPick{display:none;flex-direction:column;align-items:center;gap:11px;margin:18px 0 auto;}
+#scr-arena.prop #propPick{display:flex;}
+#pickLabel{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.15em;}
+#pickGrid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:min(430px,94vw);
+  opacity:.28;pointer-events:none;transition:opacity .2s;}
+#propPick.armed #pickGrid{opacity:1;pointer-events:auto;}
+#nobodyBtn{visibility:hidden;}
+#propPick.armed #nobodyBtn{visibility:visible;}
+.pick{border:0;border-radius:14px;padding:14px 18px;font-family:'Bungee',system-ui;font-size:17px;
+  color:var(--stage);cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.5);transition:transform .05s;}
+.pick:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.5);}
+.pick.dead{opacity:.26;pointer-events:none;}
+.pick.sm{font-size:14px;padding:9px 13px;box-shadow:0 3px 0 rgba(0,0,0,.5);}
+.fixgrid{display:none;flex-wrap:wrap;gap:7px;justify-content:center;max-width:min(400px,92vw);margin-top:8px;}
+.fixgrid.on{display:flex;}
 /* sing */
 .bigword{font-size:clamp(42px,13vw,80px);color:var(--sun);line-height:1;margin:6px 0 2px;
   text-shadow:0 0 24px rgba(255,207,63,.5);word-break:break-word;}
@@ -207,6 +232,11 @@ details.adv[open] summary::before{content:"▾ ";}
   <div class="opt" data-i18n="players"></div>
   <div id="players"></div>
   <button class="btn ghost" id="addPlayer"></button>
+  <div class="opt" data-i18n="grabModeLbl"></div>
+  <div class="seg" id="grabModeSeg">
+    <button data-v="prop" class="sel" data-i18n="gmProp"></button>
+    <button data-v="zones" data-i18n="gmZones"></button>
+  </div>
   <div class="opt" data-i18n="wordsLbl"></div>
   <div class="seg" id="deckSeg">
     <button data-v="nl" class="sel">Nederlands</button>
@@ -240,12 +270,14 @@ details.adv[open] summary::before{content:"▾ ";}
   </div>
   <details class="adv">
     <summary data-i18n="advanced"></summary>
-    <div class="opt" data-i18n="grabTimeLbl"></div>
-    <div class="seg" id="grabSeg">
-      <button data-v="10">10s</button>
-      <button data-v="15" class="sel">15s</button>
-      <button data-v="20">20s</button>
-      <button data-v="0">∞</button>
+    <div id="grabTimeOpt">
+      <div class="opt" data-i18n="grabTimeLbl"></div>
+      <div class="seg" id="grabSeg">
+        <button data-v="10">10s</button>
+        <button data-v="15" class="sel">15s</button>
+        <button data-v="20">20s</button>
+        <button data-v="0">∞</button>
+      </div>
     </div>
     <div class="opt" data-i18n="singTimeLbl"></div>
     <div class="seg" id="singSeg">
@@ -278,7 +310,7 @@ details.adv[open] summary::before{content:"▾ ";}
     <button class="btn ghost" id="backHome">←</button>
     <button class="btn hot display" id="startBtn"></button>
   </div>
-  <div class="mutenote" data-i18n="tableNote"></div>
+  <div class="mutenote" id="setupNote"></div>
 </div>
 
 <!-- ARENA (countdown + grab) -->
@@ -289,6 +321,11 @@ details.adv[open] summary::before{content:"▾ ";}
       <div id="cd" class="display">3</div>
       <div id="word" class="display" style="display:none"></div>
       <div id="discHint"></div>
+    </div>
+    <div id="propPick">
+      <div id="pickLabel"></div>
+      <div id="pickGrid"></div>
+      <button class="btn ghost" id="nobodyBtn"></button>
     </div>
     <div id="flash"></div>
   </div>
@@ -312,6 +349,8 @@ details.adv[open] summary::before{content:"▾ ";}
   </div>
   <button class="btn display" id="singingBtn"></button>
   <button class="btn ghost" id="giveUpBtn"></button>
+  <button class="btn ghost fixBtn" data-grid="fixSing" style="display:none"></button>
+  <div class="fixgrid" id="fixSing"></div>
   <div class="mutenote" id="singNote" data-i18n="judgeNote"></div>
 </div>
 
@@ -324,6 +363,8 @@ details.adv[open] summary::before{content:"▾ ";}
     <button class="btn vote-yes display" id="voteYes"></button>
     <button class="btn hot display" id="voteNo"></button>
   </div>
+  <button class="btn ghost fixBtn" data-grid="fixVote" style="display:none"></button>
+  <div class="fixgrid" id="fixVote"></div>
   <div class="mutenote" data-i18n="voteNote"></div>
 </div>
 
@@ -430,6 +471,7 @@ const DECKS = {
 const COLORS = ["#ff3d8d","#ffcf3f","#22e6e0","#7CFC6B","#ff8c42","#b18cff",
                 "#4d9fff","#f2ecff","#ff5c5c","#3ddc97"];
 const MAX_PLAYERS = 10, MIN_PLAYERS = 2, RACE_LEN = 10;
+const ZONE_MAX = 8;   // wedges get too narrow beyond this — object mode has no such limit
 
 /* ================= I18N ================= */
 const STR = {
@@ -438,6 +480,12 @@ nl:{
   offline:"werkt offline",
   newGame:"NIEUW SPEL ▶", resume:"HERVATTEN", howBtn:"HOE SPEEL JE?",
   players:"Spelers", addPlayer:"+ speler toevoegen", playerN:n=>`Speler ${n}`,
+  grabModeLbl:"Hoe pak je de mic?", gmProp:"🥄 Voorwerp", gmZones:"📱 Tikken",
+  propNote:"Leg een voorwerp in het midden — een lepel, bierviltje, sleutelbos. Handen plat op tafel tot het woord verschijnt. Wie 'm pakt, zingt; de telefoon houdt alleen de score bij.",
+  zonesMax:"Tik-modus werkt tot 8 spelers.",
+  propReady:"handen plat op tafel…", propWho:"wie heeft 'm?",
+  grabNowProp:"PAK DE MIC!", nobodyBtn:"niemand had 'm 🙅",
+  wrongName:"verkeerde naam? ✏️",
   wordsLbl:"Woorden", modeLbl:"Spelvorm",
   mClassic:"Klassiek", mRace:"Race", mBattle:"Knock-out", mQuick:"Snel spel",
   hintClassic:g=>`Eerste met ${g} 🎤 wint`,
@@ -484,14 +532,15 @@ nl:{
   roundOf:(a,b)=>`ronde ${a} van ${b}`, spacesLbl:s=>`${s}/${RACE_LEN}`,
   winner:"WINNAAR", rematch:"REVANCHE", newPlayers:"nieuwe spelers",
   howTitle:"Hoe speel je?",
-  howBody:`<p><b>1. Leg de telefoon plat</b> in het midden. Iedere speler krijgt een gekleurd vak.</p>
-  <p><b>2. Woord verschijnt</b> na 3-2-1. Tik je eigen vak om de mic te pakken. Te vroeg tikken? Dan doe je deze kaart niet mee.</p>
+  howBody:`<p><b>1. Leg een voorwerp in het midden</b> — een lepel, bierviltje, sleutelbos. Dat is de mic. Handen plat op tafel, telefoon rechtop zodat iedereen 'm kan lezen.</p>
+  <p><b>2. Woord verschijnt</b> na 3-2-1. Wie het voorwerp als eerste te pakken heeft, zingt. Tik daarna die naam aan op het scherm — dat is alleen registratie, dus mis getikt kun je nog corrigeren.</p>
   <p><b>3. Zing</b> een écht bestaand liedje waar het woord in voorkomt (variaties mogen: ZON → ZONNETJE). De klok tikt je zingtijd af — zing 'm vol! De app registreert of er écht gezongen wordt; niets gehoord als de tijd om is = mis.</p>
   <p><b>4. Stem</b> — de groep beslist of het telt. Goedgekeurd = 🎤. Afgekeurd of te laat = 🔇 en je mist de volgende kaart.</p>
   <p><b>5. Winnen</b> — Klassiek: eerste met het doel-aantal 🎤. Race: eerste over de finish. Knock-out: 2× 🔇 = af. Snel spel: meeste 🎤 na alle rondes.</p>
   <p>🎙️ <b>Luistermodus</b> (aan by default): de telefoon hoort zelf wanneer je begint te zingen en stopt de klok — geen opname, alleen het volume. Zet 'm uit of pas de gevoeligheid aan bij "meer opties". De knop blijft altijd werken als terugval.</p>
   <p>🔁 Zelfde liedje twee keer zingen in één spel? De groep mag het afkeuren — check de lijst "gezongen woorden".</p>
-  <p>👥 Grote groep (7+)? Een tablet in het midden werkt het lekkerst.</p>`,
+  <p>📱 <b>Geen voorwerp bij de hand?</b> Zet bij de spelers "Tikken" aan. De telefoon ligt dan plat in het midden en iedereen krijgt een eigen gekleurd vak; te vroeg tikken = deze kaart overslaan. Werkt tot 8 spelers.</p>
+  <p>👥 Grote groep (7+)? Met een voorwerp gaat dat prima. Speel je met tikken, dan werkt een tablet het lekkerst.</p>`,
   pauseTitle:"Pauze",
   pauseAdd:"+ toevoegen", pauseResume:"VERDER SPELEN ▶", pauseHist:"📜 gezongen woorden",
   pauseQuit:"✕ spel stoppen", quitConfirm:"Spel stoppen? De stand gaat verloren.",
@@ -503,6 +552,12 @@ en:{
   offline:"works offline",
   newGame:"NEW GAME ▶", resume:"RESUME", howBtn:"HOW TO PLAY",
   players:"Players", addPlayer:"+ add player", playerN:n=>`Player ${n}`,
+  grabModeLbl:"How do you grab the mic?", gmProp:"🥄 Object", gmZones:"📱 Tapping",
+  propNote:"Put an object in the middle — a spoon, a coaster, your keys. Hands flat on the table until the word appears. Whoever grabs it sings; the phone just keeps score.",
+  zonesMax:"Tap mode works up to 8 players.",
+  propReady:"hands flat on the table…", propWho:"who grabbed it?",
+  grabNowProp:"GRAB THE MIC!", nobodyBtn:"nobody got it 🙅",
+  wrongName:"wrong name? ✏️",
   wordsLbl:"Words", modeLbl:"Game mode",
   mClassic:"Classic", mRace:"Race", mBattle:"Knockout", mQuick:"Quick play",
   hintClassic:g=>`First to ${g} 🎤 wins`,
@@ -549,14 +604,15 @@ en:{
   roundOf:(a,b)=>`round ${a} of ${b}`, spacesLbl:s=>`${s}/${RACE_LEN}`,
   winner:"WINNER", rematch:"REMATCH", newPlayers:"new players",
   howTitle:"How to play",
-  howBody:`<p><b>1. Lay the phone flat</b> in the middle. Each player gets a colored zone.</p>
-  <p><b>2. A word appears</b> after 3-2-1. Tap your own zone to grab the mic. Tap too soon? You sit this card out.</p>
+  howBody:`<p><b>1. Put an object in the middle</b> — a spoon, a coaster, your keys. That's the mic. Hands flat on the table, phone upright so everyone can read it.</p>
+  <p><b>2. A word appears</b> after 3-2-1. Whoever grabs the object first sings. Then tap that name on screen — it's only registration, so a mis-tap can still be corrected.</p>
   <p><b>3. Sing</b> a real, existing song that contains the word (variations allowed: WIN → WINNER). The clock counts your singing time — sing it out! The app registers whether you actually sang; nothing heard when time is up = miss.</p>
   <p><b>4. Vote</b> — the group decides if it counts. Approved = 🎤. Rejected or too late = 🔇 and you miss the next card.</p>
   <p><b>5. Win</b> — Classic: first to the token goal. Race: first across the finish. Knockout: 2× 🔇 = out. Quick play: most 🎤 after all rounds.</p>
   <p>🎙️ <b>Listen mode</b> (on by default): the phone hears when you start singing and stops the clock — no recording, only loudness. Turn it off or tune the sensitivity under "more options". The button always works as a fallback.</p>
   <p>🔁 Same song twice in one game? The group may reject it — check the "sung words" list.</p>
-  <p>👥 Big group (7+)? A tablet in the middle works best.</p>`,
+  <p>📱 <b>No object handy?</b> Switch "Tapping" on under the players. The phone then lies flat in the middle and everyone gets their own colored zone; tap too soon and you skip the card. Works up to 8 players.</p>
+  <p>👥 Big group (7+)? An object handles that fine. If you play with tapping, a tablet works best.</p>`,
   pauseTitle:"Paused",
   pauseAdd:"+ add", pauseResume:"KEEP PLAYING ▶", pauseHist:"📜 sung words",
   pauseQuit:"✕ end game", quitConfirm:"End the game? The score will be lost.",
@@ -574,7 +630,7 @@ function t(key, ...a){ const v = (STR[prefs.lang]||STR.nl)[key]; return typeof v
 const S = {
   players: [],            // {name,color,tokens,mutes,space,mutedNext,lockedCard,deadRound,out}
   settings: { deckMode:"nl", mode:"classic", goal:5, rounds:15, grabTime:15, singSecs:10,
-              steal:false, solo:false, volume:false, mic:true, micSens:"med" },
+              grabMode:"prop", steal:false, solo:false, volume:false, mic:true, micSens:"med" },
   micOn: false,           // mic actually running this session
   deck: [], word: "",
   grabber: -1, stealer: -1, stealing: false,
@@ -596,6 +652,12 @@ function loadSession(){
     return (d && d.players && d.players.length >= MIN_PLAYERS) ? d : null;
   }catch(e){ return null; }
 }
+/* Sessions and prefs stored before object mode existed have no grabMode. */
+function normalizeSettings(){
+  if(S.settings.grabMode !== "zones") S.settings.grabMode = "prop";
+  if(S.players.length > ZONE_MAX) S.settings.grabMode = "prop";
+}
+const isProp = () => S.settings.grabMode === "prop";
 
 /* ================= AUDIO (Web Audio, synthesized) ================= */
 let actx = null;
@@ -753,7 +815,10 @@ function applyLang(){
   $("newPlayerName").placeholder = t("newName");
   document.querySelectorAll("#players input").forEach((inp,i)=> inp.placeholder = t("playerN", i+1));
   $("langSeg").querySelectorAll("button").forEach(b=>b.classList.toggle("sel", b.dataset.v===prefs.lang));
+  $("nobodyBtn").textContent = t("nobodyBtn");
+  document.querySelectorAll(".fixBtn").forEach(b => b.textContent = t("wrongName"));
   updateModeHint();
+  updateGrabModeUI();
 }
 
 /* ================= HOME ================= */
@@ -767,6 +832,7 @@ $("homeResume").onclick = () => {
   const d = loadSession(); if(!d) return;
   ac();
   Object.assign(S, d);
+  normalizeSettings();
   S.players.forEach(p=>{ p.lockedCard=false; p.deadRound=false; });
   S.grabber = -1; S.stealer = -1; S.stealing = false;
   // the in-flight word (if any) was possibly seen — discard it, no repeats
@@ -790,7 +856,7 @@ function playerRow(i){
     <input maxlength="10" placeholder="${esc(t("playerN", i+1))}">
     <button class="rm" title="✕">✕</button>`;
   d.querySelector(".rm").onclick = () => {
-    if($("players").children.length > MIN_PLAYERS){ d.remove(); recolor(); }
+    if($("players").children.length > MIN_PLAYERS){ d.remove(); recolor(); updateGrabModeUI(); }
   };
   return d;
 }
@@ -802,7 +868,7 @@ function recolor(){
 }
 $("addPlayer").onclick = () => {
   const n = $("players").children.length;
-  if(n < MAX_PLAYERS) $("players").appendChild(playerRow(n));
+  if(n < MAX_PLAYERS){ $("players").appendChild(playerRow(n)); updateGrabModeUI(); }
 };
 for(let i=0;i<2;i++) $("players").appendChild(playerRow(i));
 
@@ -821,6 +887,7 @@ segInit("modeSeg",  v => { S.settings.mode = v; updateModeUI(); });
 segInit("goalSeg",  v => { S.settings.goal = +v; updateModeHint(); });
 segInit("roundsSeg",v => { S.settings.rounds = +v; updateModeHint(); });
 segInit("grabSeg",  v => { S.settings.grabTime = +v; });
+segInit("grabModeSeg", v => { S.settings.grabMode = v; updateGrabModeUI(); });
 segInit("singSeg",  v => { S.settings.singSecs = +v; });
 segInit("sensSeg",  v => { S.settings.micSens = v; });
 function togInit(id, key, after){
@@ -830,6 +897,20 @@ togInit("togSteal","steal"); togInit("togSolo","solo"); togInit("togVolume","vol
 togInit("togMic","mic", updateMicUI);
 function updateMicUI(){ $("sensRow").style.display = S.settings.mic ? "" : "none"; }
 
+/* Keeps the grab-mode choice honest: tap mode is unavailable above ZONE_MAX
+   players, and the per-card grab timer only exists in tap mode (in object mode
+   a slow tap is registration lag, not a slow grab — see startRound). */
+function updateGrabModeUI(){
+  const tooMany = $("players").children.length > ZONE_MAX;
+  $("grabModeSeg").querySelector('[data-v="zones"]').disabled = tooMany;
+  if(tooMany && S.settings.grabMode === "zones") S.settings.grabMode = "prop";
+  segSet("grabModeSeg", S.settings.grabMode);
+  $("grabTimeOpt").style.display = isProp() ? "none" : "";
+  $("addPlayer").style.display = $("players").children.length >= MAX_PLAYERS ? "none" : "";
+  $("setupNote").textContent = isProp()
+    ? t("propNote") + (tooMany ? " " + t("zonesMax") : "")
+    : t("tableNote");
+}
 function updateModeUI(){
   $("goalOpt").style.display   = S.settings.mode==="classic" ? "" : "none";
   $("roundsOpt").style.display = S.settings.mode==="quick"   ? "" : "none";
@@ -845,6 +926,7 @@ function updateModeHint(){
 function restoreSetupPrefs(){
   if(!prefs.setup) return;
   Object.assign(S.settings, prefs.setup);
+  normalizeSettings();
   segSet("deckSeg", S.settings.deckMode); segSet("modeSeg", S.settings.mode);
   segSet("goalSeg", S.settings.goal); segSet("roundsSeg", S.settings.rounds);
   segSet("grabSeg", S.settings.grabTime); segSet("singSeg", S.settings.singSecs);
@@ -855,6 +937,7 @@ function restoreSetupPrefs(){
   $("togMic").classList.toggle("on", S.settings.mic);
   updateMicUI();
   updateModeUI();
+  updateGrabModeUI();
 }
 $("backHome").onclick = () => { refreshHome(); show("scr-home"); };
 $("startBtn").onclick = () => {
@@ -900,7 +983,35 @@ function drawZones(){
     svg.appendChild(el);
   });
 }
-addEventListener("resize", ()=>{ if(S.phase==="countdown"||S.phase==="grab") drawZones(); });
+addEventListener("resize", ()=>{
+  if(!isProp() && (S.phase==="countdown"||S.phase==="grab")) drawZones();
+});
+
+/* ================= ARENA: name buttons (object mode) ================= */
+function renderPicks(){
+  const g = $("pickGrid"); g.innerHTML = "";
+  S.players.forEach((p,i)=>{
+    if(p.out) return;
+    const b = document.createElement("button");
+    b.className = "pick" + (p.deadRound ? " dead" : "");
+    b.style.background = p.color;
+    b.textContent = (p.deadRound ? "🔇 " : "") + p.name;
+    b.onclick = () => onPick(i);
+    g.appendChild(b);
+  });
+}
+function onPick(i){
+  if(S.phase !== "grab") return;
+  const p = S.players[i];
+  if(!p || p.out || p.deadRound) return;
+  grabbedBy(i);
+}
+$("nobodyBtn").onclick = () => {
+  if(S.phase !== "grab") return;
+  S.phase = "between";
+  flash(t("nobody")); snd.no();
+  setTimeout(startRound, 900);
+};
 
 function flash(msg){
   const f = $("flash"); f.textContent = msg; f.style.display = "block";
@@ -928,7 +1039,11 @@ function startRound(){
   if(allMuted) activeP.forEach(p => { p.deadRound = false; });
   S.phase = "countdown";
   saveSession();
-  show("scr-arena"); drawZones();
+  const prop = isProp();
+  $("scr-arena").classList.toggle("prop", prop);
+  show("scr-arena");
+  if(prop){ renderPicks(); $("propPick").classList.remove("armed"); $("pickLabel").textContent = t("propReady"); }
+  else drawZones();
   if(allMuted) flash(t("allMuted"));
   $("word").style.display = "none";
   $("cd").style.display = "block";
@@ -952,16 +1067,25 @@ function startRound(){
       S.phase = "grab"; S.grabTimeStamp = 0;
       $("cd").style.display = "none";
       $("word").textContent = S.word; $("word").style.display = "block";
-      $("discHint").textContent = t("grabNow");
+      $("discHint").textContent = prop ? t("grabNowProp") : t("grabNow");
       snd.reveal();
-      drawZones();
-      if(S.settings.grabTime > 0){
-        noGrabT = setTimeout(()=>{
-          if(S.phase==="grab"){
-            S.phase="between"; flash(t("nobody")); snd.no();
-            setTimeout(startRound, 900);
-          }
-        }, S.settings.grabTime*1000);
+      if(prop){
+        // The physical grab already decided it; tapping a name is only
+        // registration, so there is no auto-discard timer here — a group still
+        // laughing five seconds later must not lose a valid grab. The explicit
+        // "nobody" button ends the card instead.
+        $("pickLabel").textContent = t("propWho");
+        $("propPick").classList.add("armed");
+      }else{
+        drawZones();
+        if(S.settings.grabTime > 0){
+          noGrabT = setTimeout(()=>{
+            if(S.phase==="grab"){
+              S.phase="between"; flash(t("nobody")); snd.no();
+              setTimeout(startRound, 900);
+            }
+          }, S.settings.grabTime*1000);
+        }
       }
     }
   }, 800);
@@ -986,20 +1110,55 @@ function onZoneTap(e){
     return;
   }
   if(p.deadRound || p.lockedCard) return;
-  // GRABBED
+  grabbedBy(i);
+}
+
+function grabbedBy(i){
   S.phase = "grabbed"; S.grabber = i; S.grabTimeStamp = performance.now();
   clearTimeout(noGrabT);
   snd.airhorn(); buzz([30,40,30]);
   setTimeout(startSing, 600);
 }
 
-/* ================= SING ================= */
+/* ================= WRONG-NAME CORRECTION =================
+   Object mode only. There the tap is bookkeeping, not the race result, so a
+   mis-tap must be undoable before a token is handed out. In tap mode the tap
+   IS the result and rewriting it would just be griefable. */
 let singRAF = null;
 function currentSinger(){ return S.players[S.stealing ? S.stealer : S.grabber]; }
+function setSinger(i){
+  if(S.stealing) S.stealer = i; else S.grabber = i;
+  $("singerName").textContent = S.players[i].name;
+  $("voteName").textContent = S.players[i].name;
+}
+function closeFixGrids(){ document.querySelectorAll(".fixgrid").forEach(g=>g.classList.remove("on")); }
+function syncFixButtons(){
+  const on = isProp();
+  document.querySelectorAll(".fixBtn").forEach(b => b.style.display = on ? "" : "none");
+  if(!on) closeFixGrids();
+}
+document.querySelectorAll(".fixBtn").forEach(btn => {
+  const grid = $(btn.dataset.grid);
+  btn.onclick = () => {
+    if(grid.classList.contains("on")){ grid.classList.remove("on"); return; }
+    grid.innerHTML = "";
+    const cur = S.stealing ? S.stealer : S.grabber;
+    S.players.forEach((p,i)=>{
+      if(p.out || p.deadRound || i === cur) return;
+      const b = document.createElement("button");
+      b.className = "pick sm"; b.style.background = p.color; b.textContent = p.name;
+      b.onclick = () => { setSinger(i); grid.classList.remove("on"); };
+      grid.appendChild(b);
+    });
+    grid.classList.add("on");
+  };
+});
 function startSing(){
   S.phase = "sing";
   show("scr-sing");
+  closeFixGrids(); syncFixButtons();
   $("singerName").textContent = currentSinger().name;
+  $("voteName").textContent = currentSinger().name;
   $("singWord").textContent = S.word;
   const chips = $("singChips"); chips.innerHTML = "";
   if(S.settings.solo){ const c=document.createElement("span"); c.className="chip"; c.textContent=t("solo"); chips.appendChild(c); }
@@ -1089,6 +1248,7 @@ function stopToVote(){
   S.phase = "vote";
   snd.heard(); buzz(40);
   show("scr-vote");
+  closeFixGrids();
   $("voteName").textContent = currentSinger().name;
   $("voteWord").textContent = S.word;
 }
