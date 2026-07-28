@@ -24,8 +24,14 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;overscroll-behavior:none;}
+/* When the mobile URL bar retracts the visible area grows, but height:100%
+   still resolves against the unchanged layout viewport — so the body box ends
+   short of the screen. Left repeating, the gradient tiled a second bright edge
+   into that gap. Paint the base colour on the root and stop it repeating: the
+   gradient is already solid --stage from 62% down, so the seam is invisible. */
+html{background:var(--stage);}
 body{
-  background:radial-gradient(120% 90% at 50% 0%, var(--stage2) 0%, var(--stage) 62%);
+  background:var(--stage) radial-gradient(120% 90% at 50% 0%, var(--stage2) 0%, var(--stage) 62%) no-repeat;
   color:var(--paper);
   font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
   user-select:none;-webkit-user-select:none;touch-action:manipulation;

@@ -269,6 +269,31 @@ async function fillSetup(page, names, { singTimerOff = true, mode = null } = {})
   await page.context().close();
 }
 
+/* ═════════ 6. Background covers a grown viewport ═════════ */
+{
+  section('6. Background under a retracted URL bar');
+  const { page, errors } = await newPage();
+  await page.click('#homeNew');
+
+  const bg = await page.evaluate(() => {
+    const b = getComputedStyle(document.body), h = getComputedStyle(document.documentElement);
+    return { repeat: b.backgroundRepeat, bodyColor: b.backgroundColor, rootColor: h.backgroundColor };
+  });
+  check('body gradient does not tile', bg.repeat === 'no-repeat', bg.repeat);
+  check('root paints the base colour', bg.rootColor === 'rgb(14, 10, 32)', bg.rootColor);
+  check('body has a solid colour behind the gradient', bg.bodyColor === 'rgb(14, 10, 32)', bg.bodyColor);
+
+  // Emulate the gap. The canvas background is positioned against the ROOT
+  // element, not body — shrinking body proves nothing, shrinking html
+  // reproduces the tiled bright edge exactly as seen on a real phone.
+  await page.evaluate(() => { document.documentElement.style.height = '70%'; });
+  await page.screenshot({ path: `${SHOTS}/06-short-root.png` });
+  await page.evaluate(() => { document.documentElement.style.height = ''; });
+
+  check('console clean', errors.length === 0, errors.join(' | '));
+  await page.context().close();
+}
+
 await browser.close();
 console.log(`\n${'─'.repeat(50)}\n${pass} passed, ${fail} failed`);
 if (problems.length) { console.log('\nFailures:'); problems.forEach(p => console.log('  • ' + p)); }
