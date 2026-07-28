@@ -285,16 +285,20 @@ details.adv[open] summary::before{content:"▾ ";}
         <button data-v="0">∞</button>
       </div>
     </div>
-    <div class="opt" data-i18n="singTimeLbl"></div>
-    <div class="seg" id="singSeg">
-      <button data-v="0" data-i18n="off"></button>
-      <button data-v="10" class="sel">10s</button>
-      <button data-v="15">15s</button>
-      <button data-v="20">20s</button>
+    <div id="singTimeOpt">
+      <div class="opt" data-i18n="singTimeLbl"></div>
+      <div class="seg" id="singSeg">
+        <button data-v="0" data-i18n="off"></button>
+        <button data-v="10" class="sel">10s</button>
+        <button data-v="15">15s</button>
+        <button data-v="20">20s</button>
+      </div>
     </div>
-    <div class="opt" data-i18n="listenLbl"></div>
-    <div class="toggles">
-      <div class="tog" id="togMic"><div class="lbl"><span data-i18n="mic"></span><small data-i18n="micHint"></small></div><div class="sw"></div></div>
+    <div id="listenOpt">
+      <div class="opt" data-i18n="listenLbl"></div>
+      <div class="toggles">
+        <div class="tog" id="togMic"><div class="lbl"><span data-i18n="mic"></span><small data-i18n="micHint"></small></div><div class="sw"></div></div>
+      </div>
     </div>
     <div id="sensRow" style="display:none">
       <div class="opt" data-i18n="sensLbl"></div>
@@ -487,9 +491,9 @@ nl:{
   newGame:"NIEUW SPEL ▶", resume:"HERVATTEN", howBtn:"HOE SPEEL JE?",
   players:"Spelers", addPlayer:"+ speler toevoegen", playerN:n=>`Speler ${n}`,
   grabModeLbl:"Hoe pak je de mic?", gmProp:"🥄 Voorwerp", gmZones:"📱 Tikken",
-  propNote:"Leg een voorwerp in het midden — een lepel, bierviltje, sleutelbos. Handen plat op tafel tot het woord verschijnt. Wie 'm pakt, zingt; de telefoon houdt alleen de score bij.",
+  propNote:"Leg een voorwerp in het midden — een lepel, bierviltje, sleutelbos. Handen plat op tafel tot het woord verschijnt. Wie 'm pakt, zingt. De telefoon telt niks af en luistert niet mee: als het gezongen is tik je aan wie het was.",
   zonesMax:"Tik-modus werkt tot 8 spelers.",
-  propReady:"handen plat op tafel…", propWho:"wie heeft 'm?",
+  propReady:"handen plat op tafel…", propWho:"gezongen? tik aan wie",
   grabNowProp:"PAK DE MIC!", nobodyBtn:"niemand had 'm 🙅",
   wrongName:"verkeerde naam? ✏️",
   wordsLbl:"Woorden", modeLbl:"Spelvorm",
@@ -539,13 +543,12 @@ nl:{
   winner:"WINNAAR", rematch:"REVANCHE", newPlayers:"nieuwe spelers",
   howTitle:"Hoe speel je?",
   howBody:`<p><b>1. Leg een voorwerp in het midden</b> — een lepel, bierviltje, sleutelbos. Dat is de mic. Handen plat op tafel, telefoon rechtop zodat iedereen 'm kan lezen.</p>
-  <p><b>2. Woord verschijnt</b> na 3-2-1. Wie het voorwerp als eerste te pakken heeft, zingt. Tik daarna die naam aan op het scherm — dat is alleen registratie, dus mis getikt kun je nog corrigeren.</p>
-  <p><b>3. Zing</b> een écht bestaand liedje waar het woord in voorkomt (variaties mogen: ZON → ZONNETJE). De klok tikt je zingtijd af — zing 'm vol! De app registreert of er écht gezongen wordt; niets gehoord als de tijd om is = mis.</p>
-  <p><b>4. Stem</b> — de groep beslist of het telt. Goedgekeurd = 🎤. Afgekeurd of te laat = 🔇 en je mist de volgende kaart.</p>
+  <p><b>2. Woord verschijnt</b> na 3-2-1. Wie het voorwerp als eerste te pakken heeft, zingt een écht bestaand liedje waar het woord in voorkomt (variaties mogen: ZON → ZONNETJE). De telefoon bemoeit zich er niet mee — geen klok, geen meeluisteren.</p>
+  <p><b>3. Gezongen?</b> Tik aan wie het was en stem of het telt. Mis getikt kun je nog corrigeren.</p>
+  <p><b>4. Stem</b> — de groep beslist of het telt. Goedgekeurd = 🎤. Afgekeurd = 🔇 en je mist de volgende kaart.</p>
   <p><b>5. Winnen</b> — Klassiek: eerste met het doel-aantal 🎤. Race: eerste over de finish. Knock-out: 2× 🔇 = af. Snel spel: meeste 🎤 na alle rondes.</p>
-  <p>🎙️ <b>Luistermodus</b> (aan by default): de telefoon hoort zelf wanneer je begint te zingen en stopt de klok — geen opname, alleen het volume. Zet 'm uit of pas de gevoeligheid aan bij "meer opties". De knop blijft altijd werken als terugval.</p>
   <p>🔁 Zelfde liedje twee keer zingen in één spel? De groep mag het afkeuren — check de lijst "gezongen woorden".</p>
-  <p>📱 <b>Geen voorwerp bij de hand?</b> Zet bij de spelers "Tikken" aan. De telefoon ligt dan plat in het midden en iedereen krijgt een eigen gekleurd vak; te vroeg tikken = deze kaart overslaan. Werkt tot 8 spelers.</p>
+  <p>📱 <b>Geen voorwerp bij de hand?</b> Zet bij de spelers "Tikken" aan. De telefoon ligt dan plat in het midden en iedereen krijgt een eigen gekleurd vak; te vroeg tikken = deze kaart overslaan. In die stand krijg je wél een zingklok en kan de telefoon meeluisteren om te horen wanneer je begint — instelbaar bij "meer opties". Werkt tot 8 spelers.</p>
   <p>👥 Grote groep (7+)? Met een voorwerp gaat dat prima. Speel je met tikken, dan werkt een tablet het lekkerst.</p>`,
   pauseTitle:"Pauze",
   pauseAdd:"+ toevoegen", pauseResume:"VERDER SPELEN ▶", pauseHist:"📜 gezongen woorden",
@@ -559,9 +562,9 @@ en:{
   newGame:"NEW GAME ▶", resume:"RESUME", howBtn:"HOW TO PLAY",
   players:"Players", addPlayer:"+ add player", playerN:n=>`Player ${n}`,
   grabModeLbl:"How do you grab the mic?", gmProp:"🥄 Object", gmZones:"📱 Tapping",
-  propNote:"Put an object in the middle — a spoon, a coaster, your keys. Hands flat on the table until the word appears. Whoever grabs it sings; the phone just keeps score.",
+  propNote:"Put an object in the middle — a spoon, a coaster, your keys. Hands flat on the table until the word appears. Whoever grabs it sings. The phone runs no clock and does no listening: once it's sung, tap who it was.",
   zonesMax:"Tap mode works up to 8 players.",
-  propReady:"hands flat on the table…", propWho:"who grabbed it?",
+  propReady:"hands flat on the table…", propWho:"sung it? tap who",
   grabNowProp:"GRAB THE MIC!", nobodyBtn:"nobody got it 🙅",
   wrongName:"wrong name? ✏️",
   wordsLbl:"Words", modeLbl:"Game mode",
@@ -611,13 +614,12 @@ en:{
   winner:"WINNER", rematch:"REMATCH", newPlayers:"new players",
   howTitle:"How to play",
   howBody:`<p><b>1. Put an object in the middle</b> — a spoon, a coaster, your keys. That's the mic. Hands flat on the table, phone upright so everyone can read it.</p>
-  <p><b>2. A word appears</b> after 3-2-1. Whoever grabs the object first sings. Then tap that name on screen — it's only registration, so a mis-tap can still be corrected.</p>
-  <p><b>3. Sing</b> a real, existing song that contains the word (variations allowed: WIN → WINNER). The clock counts your singing time — sing it out! The app registers whether you actually sang; nothing heard when time is up = miss.</p>
-  <p><b>4. Vote</b> — the group decides if it counts. Approved = 🎤. Rejected or too late = 🔇 and you miss the next card.</p>
+  <p><b>2. A word appears</b> after 3-2-1. Whoever grabs the object first sings a real, existing song containing the word (variations allowed: WIN → WINNER). The phone stays out of it — no clock, no listening.</p>
+  <p><b>3. Sung it?</b> Tap who it was and vote whether it counts. A mis-tap can still be corrected.</p>
+  <p><b>4. Vote</b> — the group decides if it counts. Approved = 🎤. Rejected = 🔇 and you miss the next card.</p>
   <p><b>5. Win</b> — Classic: first to the token goal. Race: first across the finish. Knockout: 2× 🔇 = out. Quick play: most 🎤 after all rounds.</p>
-  <p>🎙️ <b>Listen mode</b> (on by default): the phone hears when you start singing and stops the clock — no recording, only loudness. Turn it off or tune the sensitivity under "more options". The button always works as a fallback.</p>
   <p>🔁 Same song twice in one game? The group may reject it — check the "sung words" list.</p>
-  <p>📱 <b>No object handy?</b> Switch "Tapping" on under the players. The phone then lies flat in the middle and everyone gets their own colored zone; tap too soon and you skip the card. Works up to 8 players.</p>
+  <p>📱 <b>No object handy?</b> Switch "Tapping" on under the players. The phone then lies flat in the middle and everyone gets their own colored zone; tap too soon and you skip the card. That mode does give you a sing clock, and the phone can listen for when you start — both under "more options". Works up to 8 players.</p>
   <p>👥 Big group (7+)? An object handles that fine. If you play with tapping, a tablet works best.</p>`,
   pauseTitle:"Paused",
   pauseAdd:"+ add", pauseResume:"KEEP PLAYING ▶", pauseHist:"📜 sung words",
@@ -901,7 +903,7 @@ function togInit(id, key, after){
 }
 togInit("togSteal","steal"); togInit("togSolo","solo"); togInit("togVolume","volume");
 togInit("togMic","mic", updateMicUI);
-function updateMicUI(){ $("sensRow").style.display = S.settings.mic ? "" : "none"; }
+function updateMicUI(){ $("sensRow").style.display = (S.settings.mic && !isProp()) ? "" : "none"; }
 
 /* Keeps the grab-mode choice honest: tap mode is unavailable above ZONE_MAX
    players, and the per-card grab timer only exists in tap mode (in object mode
@@ -911,7 +913,12 @@ function updateGrabModeUI(){
   $("grabModeSeg").querySelector('[data-v="zones"]').disabled = tooMany;
   if(tooMany && S.settings.grabMode === "zones") S.settings.grabMode = "prop";
   segSet("grabModeSeg", S.settings.grabMode);
+  // Object mode has no sing screen at all, so the clock and the listening it
+  // feeds are dead settings there — hide them rather than let them lie.
   $("grabTimeOpt").style.display = isProp() ? "none" : "";
+  $("singTimeOpt").style.display = isProp() ? "none" : "";
+  $("listenOpt").style.display   = isProp() ? "none" : "";
+  updateMicUI();
   $("addPlayer").style.display = $("players").children.length >= MAX_PLAYERS ? "none" : "";
   $("setupNote").textContent = isProp()
     ? t("propNote") + (tooMany ? " " + t("zonesMax") : "")
@@ -953,7 +960,8 @@ $("startBtn").onclick = () => {
   prefs.setup = { ...S.settings }; savePrefs();
   ac(); buzz(20);
   S.roundsPlayed = 0; S.history = []; S.overtime = false;
-  if(S.settings.mic) micInit();     // request permission on this gesture; calibrates in background
+  // object mode never opens a sing screen, so don't ask for a microphone it won't use
+  if(S.settings.mic && !isProp()) micInit();   // request permission on this gesture; calibrates in background
   buildDeck(); keepAwake(); startRound();
 };
 
@@ -1122,6 +1130,15 @@ function onZoneTap(e){
 function grabbedBy(i){
   S.phase = "grabbed"; S.grabber = i; S.grabTimeStamp = performance.now();
   clearTimeout(noGrabT);
+  if(isProp()){
+    // Nothing timed happens in object mode. The performance already took place
+    // off-screen among humans, so the tap is the *result* of the round, not the
+    // start of it — go straight to the group's verdict. No clock to run late,
+    // no listening geometry to get wrong, no cue to fire mid-song.
+    snd.heard(); buzz(30);
+    setTimeout(toVote, 250);
+    return;
+  }
   snd.airhorn(); buzz([30,40,30]);
   setTimeout(startSing, 600);
 }
@@ -1249,14 +1266,17 @@ function registerSing(){
     $("singingBtn").style.display = "none";
   }
 }
-function stopToVote(){
-  if(S.phase !== "sing") return;
+function toVote(){
   S.phase = "vote";
-  snd.heard(); buzz(40);
   show("scr-vote");
-  closeFixGrids();
+  closeFixGrids(); syncFixButtons();
   $("voteName").textContent = currentSinger().name;
   $("voteWord").textContent = S.word;
+}
+function stopToVote(){
+  if(S.phase !== "sing") return;
+  snd.heard(); buzz(40);
+  toVote();
 }
 $("singingBtn").onclick = () => {
   if(S.phase !== "sing") return;
@@ -1352,6 +1372,7 @@ function showSteal(eligible, pendingBanner){
     b.textContent = q.name;
     b.onclick = () => {
       S.stealing = true; S.stealer = i;
+      if(isProp()){ snd.heard(); buzz(30); setTimeout(toVote, 250); return; }
       snd.airhorn(); buzz(30);
       startSing();
     };

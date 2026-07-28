@@ -44,14 +44,14 @@ const waitPhase = (page, p, timeout = 12000) =>
   page.waitForFunction(p2 => window.__sas.phase === p2, p, { timeout });
 
 /** setup screen: names + options. Assumes we are on scr-setup. */
-async function fillSetup(page, names, { singTimerOff = true, mode = null } = {}) {
+async function fillSetup(page, names, { singTimerOff = false, mode = null } = {}) {
   while ((await page.locator('#players .prow').count()) < names.length) await page.click('#addPlayer');
   for (let i = 0; i < names.length; i++) await page.locator('#players .prow input').nth(i).fill(names[i]);
   if (mode) await page.click(`#grabModeSeg [data-v="${mode}"]`);
-  if (singTimerOff) {
+  if (singTimerOff) {                        // tap mode only — object mode has no clock
     await page.click('details.adv summary');
     await page.click('#singSeg [data-v="0"]');
-    await page.click('#togMic');            // mic off: no getUserMedia prompt in headless
+    await page.click('#togMic');             // mic off: no getUserMedia prompt in headless
   }
 }
 
@@ -63,8 +63,12 @@ async function fillSetup(page, names, { singTimerOff = true, mode = null } = {})
   check('object mode is the default', await page.evaluate(() => window.__sas.settings.grabMode) === 'prop');
   await page.click('#homeNew');
   check('grab-time option hidden in object mode', await page.locator('#grabTimeOpt').isHidden());
+  check('sing-timer option hidden in object mode', await page.locator('#singTimeOpt').isHidden());
+  check('listen-mode option hidden in object mode', await page.locator('#listenOpt').isHidden());
   const note = await page.locator('#setupNote').innerText();
   check('setup note explains the object', /voorwerp|lepel/i.test(note), note.slice(0, 50));
+  check('setup note says the phone does not time or listen',
+    /telt niks af|luistert niet/i.test(note), note.slice(-60));
 
   await fillSetup(page, ['Sam', 'Joer', 'Bo']);
   await page.click('#startBtn');
@@ -79,7 +83,9 @@ async function fillSetup(page, names, { singTimerOff = true, mode = null } = {})
   await waitPhase(page, 'grab');
   check('name buttons armed after reveal',
     await page.locator('#propPick').evaluate(e => e.classList.contains('armed')));
-  check('label asks who grabbed it', /wie heeft/i.test(await page.locator('#pickLabel').innerText()));
+  check('label asks for the name after the singing',
+    /tik aan wie/i.test(await page.locator('#pickLabel').innerText()),
+    await page.locator('#pickLabel').innerText());
   check('word is shown', (await page.locator('#word').innerText()).length > 1);
   await page.waitForTimeout(250);   // let the arm-in fade settle so the shot is representative
   await page.screenshot({ path: `${SHOTS}/01-prop-grab.png` });
@@ -89,28 +95,23 @@ async function fillSetup(page, names, { singTimerOff = true, mode = null } = {})
   check('grab timer setting untouched (15s) but unused here', stillGrabbable === 15);
 
   await page.locator('#pickGrid .pick').nth(0).click();
-  await waitPhase(page, 'sing');
-  check('picked player is the singer', (await page.locator('#singerName').innerText()) === 'Sam');
+  await waitPhase(page, 'vote');
+  check('tap goes straight to the vote — no sing screen', await page.locator('#scr-sing').isHidden());
+  check('picked player is the singer', (await page.locator('#voteName').innerText()) === 'Sam');
   check('grabber index recorded', await page.evaluate(() => window.__sas.grabber) === 0);
+  check('no microphone requested in object mode',
+    await page.evaluate(() => window.__mic.ready === false && window.__sas.micOn === false));
+  await page.screenshot({ path: `${SHOTS}/02-prop-vote.png` });
 
   section('   wrong-name correction');
-  check('correction button visible in object mode', await page.locator('#scr-sing .fixBtn').isVisible());
-  await page.click('#scr-sing .fixBtn');
-  const opts = await page.locator('#fixSing .pick').count();
-  check('correction excludes the current singer', opts === 2, `got ${opts}`);
-  await page.locator('#fixSing .pick').nth(0).click();
-  check('singer name corrected', (await page.locator('#singerName').innerText()) === 'Joer');
-  check('state follows the correction', await page.evaluate(() => window.__sas.grabber) === 1);
-  await page.screenshot({ path: `${SHOTS}/02-prop-sing.png` });
-
-  await page.click('#singingBtn');
-  await waitPhase(page, 'vote');
-  check('vote screen carries the corrected name', (await page.locator('#voteName').innerText()) === 'Joer');
-
+  check('correction button visible in object mode', await page.locator('#scr-vote .fixBtn').isVisible());
   await page.click('#scr-vote .fixBtn');
+  const opts = await page.locator('#fixVote .pick').count();
+  check('correction excludes the current singer', opts === 2, `got ${opts}`);
   await page.locator('#fixVote .pick').nth(0).click();
   const voteName = await page.locator('#voteName').innerText();
-  check('name also correctable on the vote screen', voteName !== 'Joer', voteName);
+  check('name corrected on the vote screen', voteName === 'Joer', voteName);
+  check('state follows the correction', await page.evaluate(() => window.__sas.grabber) === 1);
 
   await page.click('#voteYes');
   await waitPhase(page, 'score');
@@ -135,8 +136,6 @@ async function fillSetup(page, names, { singTimerOff = true, mode = null } = {})
 
   await waitPhase(page, 'grab');
   await page.locator('#pickGrid .pick').nth(0).click();
-  await waitPhase(page, 'sing');
-  await page.click('#singingBtn');
   await waitPhase(page, 'vote');
   await page.click('#voteNo');                     // Sam gets a mute
   await waitPhase(page, 'score');
@@ -165,8 +164,10 @@ async function fillSetup(page, names, { singTimerOff = true, mode = null } = {})
   section('3. Tap mode still works');
   const { page, errors } = await newPage();
   await page.click('#homeNew');
-  await fillSetup(page, ['Sam', 'Joer'], { mode: 'zones' });
+  await fillSetup(page, ['Sam', 'Joer'], { mode: 'zones', singTimerOff: true });
   check('grab-time option returns in tap mode', await page.locator('#grabTimeOpt').isVisible());
+  check('sing-timer option returns in tap mode', await page.locator('#singTimeOpt').isVisible());
+  check('listen-mode option returns in tap mode', await page.locator('#listenOpt').isVisible());
   const note = await page.locator('#setupNote').innerText();
   check('setup note switches back to the flat-phone text', /plat in het midden/i.test(note));
   await page.click('#startBtn');
@@ -235,15 +236,16 @@ async function fillSetup(page, names, { singTimerOff = true, mode = null } = {})
 
 /* ═════════ 5. Sing timer + frame rate ═════════ */
 {
-  section('5. Default sing timer + frame rate');
+  section('5. Sing timer + frame rate (tap mode)');
   const { page, errors } = await newPage();
   await page.click('#homeNew');
-  await fillSetup(page, ['Sam', 'Joer'], { singTimerOff: false });
+  // the clock only exists in tap mode now
+  await fillSetup(page, ['Sam', 'Joer'], { mode: 'zones' });
   await page.click('details.adv summary');
   await page.click('#togMic');                    // mic off, keep the 10s timer
   await page.click('#startBtn');
   await waitPhase(page, 'grab');
-  await page.locator('#pickGrid .pick').nth(0).click();
+  await page.locator('#zones .wedge').first().click({ force: true });
   await waitPhase(page, 'sing');
 
   const fps = await page.evaluate(() => new Promise(res => {
