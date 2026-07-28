@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0e0a20">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Sing-a-Song — het partyspel: één woord op het scherm, wie zingt er als eerste een echte songtekst mee?">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Sing-a-Song</title>
+<style>
+@font-face{
+  font-family:'Bungee';
+  font-style:normal;font-weight:400;font-display:swap;
+  src:url(data:font/woff2;base64,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) format('woff2');
+}
+:root{
+  --stage:#0e0a20; --stage2:#231a48;
+  --neon:#ff3d8d; --ice:#22e6e0; --sun:#ffcf3f;
+  --paper:#f8f5ff; --dim:#9088bb; --panel:#151030; --line:#3a2f63;
+  --good:#7CFC6B; --good-d:#3f9c33;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none;}
+body{
+  background:radial-gradient(120% 90% at 50% 0%, var(--stage2) 0%, var(--stage) 62%);
+  color:var(--paper);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  user-select:none;-webkit-user-select:none;touch-action:manipulation;
+}
+.display{font-family:'Bungee',system-ui,sans-serif;letter-spacing:.02em;}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;text-align:center;}
+.screen.on{display:flex;}
+.screen.scroll{justify-content:flex-start;overflow-y:auto;padding-top:max(24px,env(safe-area-inset-top,0px) + 14px);padding-bottom:40px;}
+h1.logo{
+  font-size:clamp(34px,10vw,58px);line-height:1.02;color:#fff;
+  text-shadow:3px 3px 0 var(--neon), -2px -2px 0 var(--ice), 0 0 28px rgba(255,61,141,.45);
+}
+h1.logo.small{font-size:clamp(26px,7vw,40px);}
+.micmoji{font-size:clamp(44px,14vw,72px);animation:bob 2.6s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(34,230,224,.5));}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-8deg);}50%{transform:translateY(-10px) rotate(8deg);}}
+@media (prefers-reduced-motion: reduce){.micmoji{animation:none;}}
+.sub{color:var(--dim);margin-top:10px;font-size:15px;max-width:340px;}
+.btn{
+  border:0;border-radius:16px;padding:16px 26px;font-size:18px;cursor:pointer;
+  font-family:'Bungee',system-ui;color:var(--stage);background:var(--sun);
+  box-shadow:0 6px 0 #b8931f;transition:transform .05s;
+}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 #b8931f;}
+.btn.hot{background:var(--neon);color:#fff;box-shadow:0 6px 0 #a3134c;}
+.btn.hot:active{box-shadow:0 2px 0 #a3134c;}
+.btn.ice{background:var(--ice);color:var(--stage);box-shadow:0 6px 0 #128a86;}
+.btn.ice:active{box-shadow:0 2px 0 #128a86;}
+.btn.ghost{background:transparent;color:var(--dim);box-shadow:none;font-family:system-ui;font-size:14px;padding:10px;}
+.btn.wide{width:min(320px,86vw);}
+.row{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;}
+.stack{display:flex;flex-direction:column;gap:12px;align-items:center;}
+/* setup */
+#players{display:flex;flex-direction:column;gap:8px;width:min(340px,90vw);margin:16px 0 8px;}
+.prow{display:flex;gap:8px;align-items:center;}
+.dot{width:22px;height:22px;border-radius:50%;flex:none;border:2px solid rgba(0,0,0,.25);}
+.prow input{
+  flex:1;background:var(--panel);border:2px solid var(--line);border-radius:10px;color:var(--paper);
+  padding:10px 12px;font-size:16px;outline:none;min-width:0;
+}
+.prow input:focus{border-color:var(--ice);}
+.prow .rm{background:none;border:0;color:var(--dim);font-size:20px;cursor:pointer;padding:4px 8px;}
+.opt{margin:14px 0 6px;color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.14em;}
+.seg{display:inline-flex;background:var(--panel);border-radius:12px;padding:4px;gap:4px;flex-wrap:wrap;justify-content:center;}
+.seg button{border:0;background:transparent;color:var(--dim);padding:8px 13px;border-radius:9px;font-size:14px;cursor:pointer;}
+.seg button.sel{background:var(--ice);color:var(--stage);font-weight:700;}
+.toggles{display:flex;flex-direction:column;gap:8px;width:min(340px,90vw);}
+.tog{display:flex;align-items:center;gap:10px;background:var(--panel);border-radius:12px;padding:10px 14px;cursor:pointer;text-align:left;}
+.tog .lbl{flex:1;font-size:14px;}
+.tog .lbl small{display:block;color:var(--dim);font-size:12px;margin-top:2px;}
+.sw{width:44px;height:26px;border-radius:13px;background:var(--line);position:relative;flex:none;transition:background .15s;}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:var(--paper);transition:left .15s;}
+.tog.on .sw{background:var(--ice);}
+.tog.on .sw::after{left:21px;}
+details.adv{width:min(340px,90vw);margin-top:14px;}
+details.adv summary{color:var(--dim);font-size:13px;cursor:pointer;list-style:none;text-transform:uppercase;letter-spacing:.12em;}
+details.adv summary::before{content:"▸ ";}
+details.adv[open] summary::before{content:"▾ ";}
+/* grab arena */
+#arena{position:fixed;inset:0;}
+#zones{position:absolute;inset:0;width:100%;height:100%;}
+.wedge{stroke:var(--stage);stroke-width:3;transition:opacity .2s;}
+.wedge.dead{opacity:.16;}
+.zlabel{font-family:'Bungee',system-ui;fill:#0e0a20;font-size:19px;pointer-events:none;}
+#centerDisc{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(62vw,300px);height:min(62vw,300px);border-radius:50%;
+  background:radial-gradient(circle at 50% 35%, #2c2152, #0e0a20 75%);
+  border:5px solid var(--sun);box-shadow:0 0 40px rgba(255,207,63,.45),inset 0 0 30px rgba(0,0,0,.6);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  pointer-events:none;padding:14px;
+}
+#cd{font-size:clamp(60px,20vw,96px);color:var(--ice);text-shadow:0 0 20px rgba(34,230,224,.6);}
+#word{font-size:clamp(28px,9vw,50px);color:var(--sun);line-height:1;word-break:break-word;
+  text-shadow:0 0 18px rgba(255,207,63,.5);}
+#discHint{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.15em;}
+#flash{position:absolute;left:50%;top:12%;transform:translateX(-50%);background:var(--neon);color:#fff;
+  padding:8px 16px;border-radius:12px;font-weight:700;display:none;white-space:nowrap;z-index:5;max-width:92vw;
+  overflow:hidden;text-overflow:ellipsis;}
+/* prop mode — a real object is grabbed; the phone only registers who got it */
+#scr-arena.prop #zones{display:none;}
+#scr-arena.prop #arena{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  overflow-y:auto;padding:calc(52px + env(safe-area-inset-top,0px)) 14px 22px;}
+/* auto margins: centred when it fits, scrolls from the top when it doesn't */
+#scr-arena.prop #centerDisc{position:static;transform:none;flex:none;margin-top:auto;
+  width:min(52vw,230px);height:min(52vw,230px);}
+/* smaller disc than tap mode → step the word down so the longest entries
+   (REGENBOOG, BEAUTIFUL — 9 chars) still fit on one line */
+#scr-arena.prop #word{font-size:clamp(19px,6vw,32px);}
+#propPick{display:none;flex-direction:column;align-items:center;gap:11px;margin:18px 0 auto;}
+#scr-arena.prop #propPick{display:flex;}
+#pickLabel{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.15em;}
+#pickGrid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:min(430px,94vw);
+  opacity:.28;pointer-events:none;transition:opacity .2s;}
+#propPick.armed #pickGrid{opacity:1;pointer-events:auto;}
+#nobodyBtn{visibility:hidden;}
+#propPick.armed #nobodyBtn{visibility:visible;}
+.pick{border:0;border-radius:14px;padding:14px 18px;font-family:'Bungee',system-ui;font-size:17px;
+  color:var(--stage);cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.5);transition:transform .05s;}
+.pick:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.5);}
+.pick.dead{opacity:.26;pointer-events:none;}
+.pick.sm{font-size:14px;padding:9px 13px;box-shadow:0 3px 0 rgba(0,0,0,.5);}
+.fixgrid{display:none;flex-wrap:wrap;gap:7px;justify-content:center;max-width:min(400px,92vw);margin-top:8px;}
+.fixgrid.on{display:flex;}
+/* sing */
+.bigword{font-size:clamp(42px,13vw,80px);color:var(--sun);line-height:1;margin:6px 0 2px;
+  text-shadow:0 0 24px rgba(255,207,63,.5);word-break:break-word;}
+.singer{font-size:21px;}
+.chips{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center;}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--sun);border-radius:20px;
+  padding:5px 12px;font-size:13px;font-weight:700;}
+#ring{margin:16px 0;}
+#ring circle.track{stroke:var(--line);fill:none;}
+#ring circle.prog{stroke:var(--ice);fill:none;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;}
+#ringNum{font-family:'Bungee';font-size:34px;fill:var(--paper);}
+#ring circle.prog.loud,#ring circle.prog.heard{stroke:var(--good);}
+/* mic meter */
+#micMeter{display:none;flex-direction:column;align-items:center;gap:7px;width:min(300px,80vw);margin:2px 0 6px;}
+.meterTrack{position:relative;width:100%;height:16px;border-radius:9px;background:var(--panel);
+  border:1px solid var(--line);overflow:hidden;}
+.meterFill{height:100%;width:0%;border-radius:9px;background:linear-gradient(90deg,var(--ice),var(--sun));
+  transition:width .05s linear;}
+.meterFill.loud{background:linear-gradient(90deg,var(--good),#c9ff6b);}
+.meterMark{position:absolute;top:-2px;left:50%;width:3px;height:20px;background:var(--neon);border-radius:2px;}
+#micStatus{font-size:13px;color:var(--dim);min-height:18px;}
+#micStatus.hot{color:var(--good);font-weight:700;}
+#micDbg{font-size:11px;color:var(--dim);opacity:.65;font-variant-numeric:tabular-nums;min-height:14px;}
+/* vote / steal */
+.votebtns{display:flex;gap:14px;margin-top:22px;}
+.votebtns .btn{font-size:21px;padding:22px 24px;}
+.vote-yes{background:var(--good);box-shadow:0 6px 0 var(--good-d);color:#123309;}
+.vote-yes:active{box-shadow:0 2px 0 var(--good-d);}
+#stealList{display:flex;flex-direction:column;gap:10px;width:min(300px,86vw);margin-top:18px;}
+#stealList .btn{width:100%;font-size:16px;}
+/* scoreboard */
+#board,#winBoard{display:flex;flex-direction:column;gap:10px;width:min(360px,92vw);margin:18px 0;}
+.srow{display:flex;align-items:center;gap:10px;background:var(--panel);border-radius:12px;padding:10px 14px;}
+.srow .nm{flex:1;text-align:left;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.srow .tok{letter-spacing:2px;font-size:17px;white-space:nowrap;}
+.srow.mutedP{opacity:.5;}
+.srow.outP{opacity:.35;text-decoration:line-through;}
+.bar{flex:1.2;height:12px;border-radius:6px;background:var(--line);overflow:hidden;}
+.bar .fill{height:100%;background:linear-gradient(90deg,var(--ice),var(--good));border-radius:6px;transition:width .4s;}
+.banner{font-size:clamp(24px,7vw,38px);max-width:92vw;}
+.banner.good{color:var(--good);} .banner.bad{color:var(--neon);}
+.roundinfo{color:var(--dim);font-size:13px;margin-top:8px;}
+/* winner */
+#confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;}
+.cf{position:absolute;width:10px;height:14px;top:-20px;animation:fall linear forwards;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);}}
+@media (prefers-reduced-motion: reduce){.cf{display:none;}}
+.mutenote{color:var(--dim);font-size:13px;margin-top:14px;max-width:310px;}
+/* fixed corner buttons */
+.corner{position:fixed;z-index:20;background:var(--panel);border:1px solid var(--line);
+  color:var(--paper);border-radius:10px;padding:6px 10px;font-size:16px;cursor:pointer;
+  top:calc(12px + env(safe-area-inset-top,0px));}
+#sndToggle{right:12px;}
+#pauseBtn{left:12px;display:none;}
+/* overlays */
+.overlay{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;
+  background:rgba(8,5,20,.82);backdrop-filter:blur(4px);padding:20px;}
+.overlay.on{display:flex;}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;
+  width:min(380px,94vw);max-height:84vh;overflow-y:auto;text-align:center;}
+.panel h2{font-family:'Bungee';font-size:20px;color:var(--sun);margin-bottom:12px;}
+.panel .howto{text-align:left;font-size:14px;line-height:1.55;color:var(--paper);}
+.panel .howto b{color:var(--sun);}
+.panel .howto p{margin:8px 0;}
+.plist{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.plist .srow{padding:8px 12px;}
+.plist .rm{background:none;border:0;color:var(--neon);font-size:18px;cursor:pointer;padding:2px 8px;}
+.histlist{text-align:left;font-size:14px;max-height:46vh;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin:10px 0;}
+.histlist .h{display:flex;gap:8px;align-items:center;background:var(--stage);border-radius:8px;padding:7px 10px;}
+.histlist .h .w{font-family:'Bungee';color:var(--sun);flex:1;text-align:left;font-size:13px;}
+.langseg{position:static;margin-top:18px;}
+.footer{color:var(--dim);font-size:12px;margin-top:26px;}
+</style>
+</head>
+<body>
+<button id="sndToggle" class="corner" title="sound">🔊</button>
+<button id="pauseBtn" class="corner" title="pause">⏸</button>
+
+<!-- HOME -->
+<div class="screen on" id="scr-home">
+  <div class="micmoji">🎤</div>
+  <h1 class="logo display">SING-A-SONG</h1>
+  <div class="sub" data-i18n="tagline"></div>
+  <div style="height:26px"></div>
+  <div class="stack">
+    <button class="btn hot display wide" id="homeNew"></button>
+    <button class="btn ice display wide" id="homeResume" style="display:none"></button>
+    <button class="btn display wide" id="homeHow"></button>
+  </div>
+  <div class="seg langseg" id="langSeg">
+    <button data-v="nl">Nederlands</button>
+    <button data-v="en">English</button>
+  </div>
+  <div class="footer">Sing-a-Song v1.0 · <span data-i18n="offline"></span></div>
+</div>
+
+<!-- SETUP -->
+<div class="screen scroll" id="scr-setup">
+  <h1 class="logo display small">SING-A-SONG</h1>
+  <div class="opt" data-i18n="players"></div>
+  <div id="players"></div>
+  <button class="btn ghost" id="addPlayer"></button>
+  <div class="opt" data-i18n="grabModeLbl"></div>
+  <div class="seg" id="grabModeSeg">
+    <button data-v="prop" class="sel" data-i18n="gmProp"></button>
+    <button data-v="zones" data-i18n="gmZones"></button>
+  </div>
+  <div class="opt" data-i18n="wordsLbl"></div>
+  <div class="seg" id="deckSeg">
+    <button data-v="nl" class="sel">Nederlands</button>
+    <button data-v="en">English</button>
+    <button data-v="mix">Mix</button>
+  </div>
+  <div class="opt" data-i18n="modeLbl"></div>
+  <div class="seg" id="modeSeg">
+    <button data-v="classic" class="sel" data-i18n="mClassic"></button>
+    <button data-v="race" data-i18n="mRace"></button>
+    <button data-v="battle" data-i18n="mBattle"></button>
+    <button data-v="quick" data-i18n="mQuick"></button>
+  </div>
+  <div class="sub" id="modeHint" style="margin-top:8px;font-size:13px;"></div>
+  <div id="goalOpt">
+    <div class="opt" data-i18n="goalLbl"></div>
+    <div class="seg" id="goalSeg">
+      <button data-v="3">3</button>
+      <button data-v="5" class="sel">5</button>
+      <button data-v="7">7</button>
+      <button data-v="10">10</button>
+    </div>
+  </div>
+  <div id="roundsOpt" style="display:none">
+    <div class="opt" data-i18n="roundsLbl"></div>
+    <div class="seg" id="roundsSeg">
+      <button data-v="10">10</button>
+      <button data-v="15" class="sel">15</button>
+      <button data-v="20">20</button>
+    </div>
+  </div>
+  <details class="adv">
+    <summary data-i18n="advanced"></summary>
+    <div id="grabTimeOpt">
+      <div class="opt" data-i18n="grabTimeLbl"></div>
+      <div class="seg" id="grabSeg">
+        <button data-v="10">10s</button>
+        <button data-v="15" class="sel">15s</button>
+        <button data-v="20">20s</button>
+        <button data-v="0">∞</button>
+      </div>
+    </div>
+    <div class="opt" data-i18n="singTimeLbl"></div>
+    <div class="seg" id="singSeg">
+      <button data-v="0" data-i18n="off"></button>
+      <button data-v="10" class="sel">10s</button>
+      <button data-v="15">15s</button>
+      <button data-v="20">20s</button>
+    </div>
+    <div class="opt" data-i18n="listenLbl"></div>
+    <div class="toggles">
+      <div class="tog" id="togMic"><div class="lbl"><span data-i18n="mic"></span><small data-i18n="micHint"></small></div><div class="sw"></div></div>
+    </div>
+    <div id="sensRow" style="display:none">
+      <div class="opt" data-i18n="sensLbl"></div>
+      <div class="seg" id="sensSeg">
+        <button data-v="low" data-i18n="sensLow"></button>
+        <button data-v="med" class="sel" data-i18n="sensMed"></button>
+        <button data-v="high" data-i18n="sensHigh"></button>
+      </div>
+    </div>
+    <div class="opt" data-i18n="modifiers"></div>
+    <div class="toggles">
+      <div class="tog" id="togSteal"><div class="lbl"><span data-i18n="steal"></span><small data-i18n="stealHint"></small></div><div class="sw"></div></div>
+      <div class="tog" id="togSolo"><div class="lbl"><span data-i18n="solo"></span><small data-i18n="soloHint"></small></div><div class="sw"></div></div>
+      <div class="tog" id="togVolume"><div class="lbl"><span data-i18n="volume"></span><small data-i18n="volumeHint"></small></div><div class="sw"></div></div>
+    </div>
+  </details>
+  <div style="height:22px"></div>
+  <div class="row">
+    <button class="btn ghost" id="backHome">←</button>
+    <button class="btn hot display" id="startBtn"></button>
+  </div>
+  <div class="mutenote" id="setupNote"></div>
+</div>
+
+<!-- ARENA (countdown + grab) -->
+<div class="screen" id="scr-arena">
+  <div id="arena">
+    <svg id="zones"></svg>
+    <div id="centerDisc">
+      <div id="cd" class="display">3</div>
+      <div id="word" class="display" style="display:none"></div>
+      <div id="discHint"></div>
+    </div>
+    <div id="propPick">
+      <div id="pickLabel"></div>
+      <div id="pickGrid"></div>
+      <button class="btn ghost" id="nobodyBtn"></button>
+    </div>
+    <div id="flash"></div>
+  </div>
+</div>
+
+<!-- SING -->
+<div class="screen" id="scr-sing">
+  <div class="singer">🎤 <b id="singerName"></b> <span data-i18n="hasMic"></span></div>
+  <div class="bigword display" id="singWord"></div>
+  <div class="sub" data-i18n="singPrompt"></div>
+  <div class="chips" id="singChips"></div>
+  <svg id="ring" width="150" height="150" viewBox="0 0 150 150">
+    <circle class="track" cx="75" cy="75" r="64" stroke-width="10"/>
+    <circle class="prog" id="ringProg" cx="75" cy="75" r="64" stroke-width="10"/>
+    <text id="ringNum" x="75" y="87" text-anchor="middle">10</text>
+  </svg>
+  <div id="micMeter">
+    <div class="meterTrack"><div class="meterFill" id="meterFill"></div><div class="meterMark"></div></div>
+    <div id="micStatus"></div>
+    <div id="micDbg"></div>
+  </div>
+  <button class="btn display" id="singingBtn"></button>
+  <button class="btn ghost" id="giveUpBtn"></button>
+  <button class="btn ghost fixBtn" data-grid="fixSing" style="display:none"></button>
+  <div class="fixgrid" id="fixSing"></div>
+  <div class="mutenote" id="singNote" data-i18n="judgeNote"></div>
+</div>
+
+<!-- VOTE -->
+<div class="screen" id="scr-vote">
+  <div class="singer"><b id="voteName"></b> <span data-i18n="sangWith"></span></div>
+  <div class="bigword display" id="voteWord"></div>
+  <div class="sub" data-i18n="votePrompt"></div>
+  <div class="votebtns">
+    <button class="btn vote-yes display" id="voteYes"></button>
+    <button class="btn hot display" id="voteNo"></button>
+  </div>
+  <button class="btn ghost fixBtn" data-grid="fixVote" style="display:none"></button>
+  <div class="fixgrid" id="fixVote"></div>
+  <div class="mutenote" data-i18n="voteNote"></div>
+</div>
+
+<!-- STEAL -->
+<div class="screen" id="scr-steal">
+  <div class="singer">😈 <span class="display" style="color:var(--neon);font-size:26px" data-i18n="stealTitle"></span></div>
+  <div class="bigword display" id="stealWord"></div>
+  <div class="sub" data-i18n="stealPrompt"></div>
+  <div id="stealList"></div>
+  <button class="btn ghost" id="stealSkip"></button>
+</div>
+
+<!-- SCORE INTERLUDE -->
+<div class="screen" id="scr-score">
+  <div class="banner display" id="scoreBanner"></div>
+  <div id="board"></div>
+  <div class="roundinfo" id="roundInfo"></div>
+  <button class="btn display" id="nextBtn"></button>
+  <button class="btn ghost" id="histBtn"></button>
+</div>
+
+<!-- WINNER -->
+<div class="screen" id="scr-win">
+  <div id="confetti"></div>
+  <div class="sub">🏆 <span data-i18n="winner"></span> 🏆</div>
+  <h1 class="logo display" id="winName"></h1>
+  <div id="winBoard" style="margin-top:16px"></div>
+  <div style="height:20px"></div>
+  <div class="row">
+    <button class="btn hot display" id="rematchBtn"></button>
+    <button class="btn ghost" id="newGameBtn"></button>
+  </div>
+</div>
+
+<!-- HOW TO PLAY overlay -->
+<div class="overlay" id="ov-howto">
+  <div class="panel">
+    <h2 data-i18n="howTitle"></h2>
+    <div class="howto" id="howBody"></div>
+    <div style="height:14px"></div>
+    <button class="btn ice display" id="howClose">OK</button>
+  </div>
+</div>
+
+<!-- PAUSE overlay -->
+<div class="overlay" id="ov-pause">
+  <div class="panel">
+    <h2 data-i18n="pauseTitle"></h2>
+    <div class="plist" id="pausePlayers"></div>
+    <div class="row" style="margin-bottom:14px">
+      <input id="newPlayerName" maxlength="10" style="background:var(--stage);border:2px solid var(--line);border-radius:10px;color:var(--paper);padding:9px 12px;font-size:15px;outline:none;width:150px">
+      <button class="btn ghost" id="pauseAdd" style="color:var(--ice)"></button>
+    </div>
+    <div class="stack">
+      <button class="btn ice display wide" id="pauseResume"></button>
+      <button class="btn ghost" id="pauseHist"></button>
+      <button class="btn ghost" id="pauseQuit" style="color:var(--neon)"></button>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY overlay -->
+<div class="overlay" id="ov-hist">
+  <div class="panel">
+    <h2 data-i18n="histTitle"></h2>
+    <div class="histlist" id="histList"></div>
+    <button class="btn ice display" id="histClose">OK</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ================= DATA: word decks ================= */
+const DECKS = {
+  nl: ["LIEFDE","NACHT","ZON","HART","DANSEN","ZEE","REGEN","DROOM","TIJD","ALLEEN",
+       "VUUR","STERREN","HUIS","OGEN","LACHEN","ZOMER","VRIJ","MOOI","SAMEN","KUS",
+       "WERELD","LICHT","STIL","GOUD","HEMEL","WIND","WATER","FEEST","LEVEN","MORGEN",
+       "ROOD","BLOEMEN","MAMA","KLEIN","GROOT","MUZIEK","STRAAT","LAND","BLIJF","GA",
+       "ALTIJD","ARMEN","AVOND","BANG","BEETJE","BERGEN","BLAUW","DAG","DENK","DICHTBIJ",
+       "DONKER","DRAAIEN","DUIZEND","EILAND","EVEN","GELOOF","GELUK","GEVOEL","GISTEREN","GLIMLACH",
+       "HAND","HIER","HOOP","HOU","HUILEN","JAREN","JONG","JONGEN","KIND","KOUD",
+       "KRACHT","LATER","LIED","LOPEN","LUCHT","MAAN","MEER","MEISJE","MOEDER","NIEMAND",
+       "NOOIT","OOIT","OVER","PAPA","PARADIJS","REGENBOOG","ROZEN","SCHATJE","SLAPEN","SPIEGEL",
+       "SPRINGEN","STAD","STEM","STRAND","THUIS","TRANEN","TROUWEN","VADER","VAKANTIE","VALLEN",
+       "VANAVOND","VANNACHT","VERDER","VERGETEN","VERLIEFD","VERLOREN","VLIEGEN","VLINDERS","VOGELS","VRIENDEN",
+       "VROUW","VUURWERK","WAKKER","WARM","WEG","WIJN","WINTER","WOLKEN","WONDER","WOORDEN",
+       "ZACHT","ZATERDAG","ZINGEN","ZOENEN","ZWAAIEN","ZWART"],
+  en: ["LOVE","NIGHT","FIRE","BABY","DANCE","RAIN","HOME","HEART","DREAM","TIME",
+       "ALONE","STAR","EYES","SUMMER","FREE","GOLD","SKY","WIND","WATER","PARTY",
+       "LIFE","LIGHT","ROAD","GIRL","BOY","CRY","SMILE","SUN","MOON","RUN",
+       "WORLD","MONEY","CRAZY","FOREVER","TONIGHT","SWEET","BLUE","ROCK","CALL","STAY",
+       "ANGEL","BEAUTIFUL","BEAT","BELIEVE","BODY","BREAK","BURN","CAR","CHANGE","CITY",
+       "CLOSE","COLD","DARK","DAY","DIAMOND","DOOR","DOWN","DRIVE","EASY","FAITH",
+       "FALL","FEEL","FLY","FRIDAY","FRIEND","GAME","GONE","GOOD","GOODBYE","HAND",
+       "HAPPY","HEAVEN","HELLO","HERO","HIGH","HOLD","HOLIDAY","ISLAND","JUMP","KING",
+       "KISS","LADY","LIE","LITTLE","LONELY","LOST","LOUD","LOW","MAGIC","MAN",
+       "MIND","MISS","MORNING","MOUNTAIN","MUSIC","NAME","NEVER","OCEAN","PAIN","PARADISE",
+       "PHONE","PLAY","PRAY","QUEEN","RADIO","RED","REMEMBER","RING","RIVER","ROLL",
+       "ROSE","SAD","SEA","SECRET","SHADOW","SHAKE","SHINE","SHOUT","SING","SLEEP",
+       "SORRY","SOUL","SOUND","SPACE","STOP","STORM","STREET","STRONG","TEARS","THUNDER",
+       "TOUCH","TOWN","TRAIN","TRUE","UP","VOICE","WAIT","WALK","WAR","WAY",
+       "WILD","WISH","WOMAN","WORD","YESTERDAY","YOUNG"]
+};
+const COLORS = ["#ff3d8d","#ffcf3f","#22e6e0","#7CFC6B","#ff8c42","#b18cff",
+                "#4d9fff","#f2ecff","#ff5c5c","#3ddc97"];
+const MAX_PLAYERS = 10, MIN_PLAYERS = 2, RACE_LEN = 10;
+const ZONE_MAX = 8;   // wedges get too narrow beyond this — object mode has no such limit
+
+/* ================= I18N ================= */
+const STR = {
+nl:{
+  tagline:"Eén woord op het scherm. Wie zingt er als eerste een échte songtekst mee?",
+  offline:"werkt offline",
+  newGame:"NIEUW SPEL ▶", resume:"HERVATTEN", howBtn:"HOE SPEEL JE?",
+  players:"Spelers", addPlayer:"+ speler toevoegen", playerN:n=>`Speler ${n}`,
+  grabModeLbl:"Hoe pak je de mic?", gmProp:"🥄 Voorwerp", gmZones:"📱 Tikken",
+  propNote:"Leg een voorwerp in het midden — een lepel, bierviltje, sleutelbos. Handen plat op tafel tot het woord verschijnt. Wie 'm pakt, zingt; de telefoon houdt alleen de score bij.",
+  zonesMax:"Tik-modus werkt tot 8 spelers.",
+  propReady:"handen plat op tafel…", propWho:"wie heeft 'm?",
+  grabNowProp:"PAK DE MIC!", nobodyBtn:"niemand had 'm 🙅",
+  wrongName:"verkeerde naam? ✏️",
+  wordsLbl:"Woorden", modeLbl:"Spelvorm",
+  mClassic:"Klassiek", mRace:"Race", mBattle:"Knock-out", mQuick:"Snel spel",
+  hintClassic:g=>`Eerste met ${g} 🎤 wint`,
+  hintRace:`🎤 = +1 vakje, 🔇 = −1. Eerste bij ${RACE_LEN} wint`,
+  hintBattle:"2× 🔇 = af. Wie overblijft wint",
+  hintQuick:r=>`${r} rondes — meeste 🎤 wint`,
+  goalLbl:"Winnen bij 🎤 ×", roundsLbl:"Aantal rondes", advanced:"meer opties",
+  grabTimeLbl:"Pak-tijd per kaart", singTimeLbl:"Zing-timer", off:"uit",
+  listenLbl:"Meezing-detectie",
+  mic:"🎙️ Luistermodus", micHint:"De telefoon hoort zelf wanneer je zingt (geen opname)",
+  sensLbl:"Gevoeligheid", sensLow:"Rustig", sensMed:"Normaal", sensHigh:"Gevoelig",
+  modifiers:"Extra regels",
+  steal:"😈 Stelen", stealHint:"Bij afkeuring mag een ander het woord proberen",
+  solo:"🎤 Solo-artiest", soloHint:"Niemand mag meezingen of helpen",
+  volume:"📢 Vol volume", volumeHint:"Fluisteren telt niet",
+  start:"START ▶",
+  tableNote:"Leg de telefoon plat in het midden. Iedereen krijgt een eigen vak. Te vroeg tikken = deze kaart overslaan!",
+  getReady:"maak je klaar…", grabNow:"PAK 'M — tik je vak!",
+  tooSoon:n=>`${n}: TE VROEG! 🙈`, nobody:"Niemand? Nieuwe kaart!",
+  allMuted:"Iedereen 🔇? Iedereen doet weer mee!",
+  faster:(w,ms,l)=>`${w} was ${(ms/1000).toFixed(2)}s sneller dan ${l}!`,
+  micListening:"🎙️ luistert… begin te zingen!", micHeard:"gehoord! 🎶",
+  keepSinging:"Gehoord! Zing de tijd vol 🎶",
+  micCalibrating:"🎙️ microfoon kalibreren…",
+  micDenied:"Microfoon geweigerd — gebruik de knop hieronder.",
+  micUnavailable:"Geen microfoon — gebruik de knop hieronder.",
+  micReady:n=>`Microfoon klaar (${n})`, orTap:"…of tik hier",
+  hasMic:"heeft de mic!", singPrompt:"Zing een echte songtekst met dit woord",
+  singing:"ZINGT! 🎶", giveUp:"🙈 geeft op",
+  judgeNote:"Alleen een ándere speler drukt op de knop zodra het zingen begint.",
+  noTimer:"geen timer — jury, let op!",
+  sangWith:"zong met het woord",
+  votePrompt:"Was het een echte, herkenbare songtekst mét het woord?",
+  voteYes:"✅ TELT", voteNo:"❌ TELT NIET",
+  voteNote:"De groep beslist samen (meerderheid). De zanger stemt niet mee.",
+  stealTitle:"STELEN!", stealPrompt:"Wie durft dit woord alsnog te zingen? Zelfde regels, zelfde risico.",
+  stealSkip:"niemand durft →",
+  plusOne:n=>`${n} +1 🎤`, gotMute:n=>`${n} krijgt een 🔇`,
+  tooLate:"TE LAAT! 🔇", gaveUp:n=>`${n} geeft op 🔇`,
+  eliminated:n=>`${n} ligt eruit! 💀`,
+  overtime:"GELIJK! Beslissingsronde 🔥",
+  deckReshuffled:"Alle woorden gehad — opnieuw geschud!",
+  nextCard:"VOLGENDE KAART ▶", histBtn:"📜 gezongen woorden",
+  roundOf:(a,b)=>`ronde ${a} van ${b}`, spacesLbl:s=>`${s}/${RACE_LEN}`,
+  winner:"WINNAAR", rematch:"REVANCHE", newPlayers:"nieuwe spelers",
+  howTitle:"Hoe speel je?",
+  howBody:`<p><b>1. Leg een voorwerp in het midden</b> — een lepel, bierviltje, sleutelbos. Dat is de mic. Handen plat op tafel, telefoon rechtop zodat iedereen 'm kan lezen.</p>
+  <p><b>2. Woord verschijnt</b> na 3-2-1. Wie het voorwerp als eerste te pakken heeft, zingt. Tik daarna die naam aan op het scherm — dat is alleen registratie, dus mis getikt kun je nog corrigeren.</p>
+  <p><b>3. Zing</b> een écht bestaand liedje waar het woord in voorkomt (variaties mogen: ZON → ZONNETJE). De klok tikt je zingtijd af — zing 'm vol! De app registreert of er écht gezongen wordt; niets gehoord als de tijd om is = mis.</p>
+  <p><b>4. Stem</b> — de groep beslist of het telt. Goedgekeurd = 🎤. Afgekeurd of te laat = 🔇 en je mist de volgende kaart.</p>
+  <p><b>5. Winnen</b> — Klassiek: eerste met het doel-aantal 🎤. Race: eerste over de finish. Knock-out: 2× 🔇 = af. Snel spel: meeste 🎤 na alle rondes.</p>
+  <p>🎙️ <b>Luistermodus</b> (aan by default): de telefoon hoort zelf wanneer je begint te zingen en stopt de klok — geen opname, alleen het volume. Zet 'm uit of pas de gevoeligheid aan bij "meer opties". De knop blijft altijd werken als terugval.</p>
+  <p>🔁 Zelfde liedje twee keer zingen in één spel? De groep mag het afkeuren — check de lijst "gezongen woorden".</p>
+  <p>📱 <b>Geen voorwerp bij de hand?</b> Zet bij de spelers "Tikken" aan. De telefoon ligt dan plat in het midden en iedereen krijgt een eigen gekleurd vak; te vroeg tikken = deze kaart overslaan. Werkt tot 8 spelers.</p>
+  <p>👥 Grote groep (7+)? Met een voorwerp gaat dat prima. Speel je met tikken, dan werkt een tablet het lekkerst.</p>`,
+  pauseTitle:"Pauze",
+  pauseAdd:"+ toevoegen", pauseResume:"VERDER SPELEN ▶", pauseHist:"📜 gezongen woorden",
+  pauseQuit:"✕ spel stoppen", quitConfirm:"Spel stoppen? De stand gaat verloren.",
+  histTitle:"Gezongen woorden", histEmpty:"Nog niets gezongen.",
+  resumeBanner:"Verder spelen!", newName:"naam…"
+},
+en:{
+  tagline:"One word on the screen. Who's first to sing a real lyric with it?",
+  offline:"works offline",
+  newGame:"NEW GAME ▶", resume:"RESUME", howBtn:"HOW TO PLAY",
+  players:"Players", addPlayer:"+ add player", playerN:n=>`Player ${n}`,
+  grabModeLbl:"How do you grab the mic?", gmProp:"🥄 Object", gmZones:"📱 Tapping",
+  propNote:"Put an object in the middle — a spoon, a coaster, your keys. Hands flat on the table until the word appears. Whoever grabs it sings; the phone just keeps score.",
+  zonesMax:"Tap mode works up to 8 players.",
+  propReady:"hands flat on the table…", propWho:"who grabbed it?",
+  grabNowProp:"GRAB THE MIC!", nobodyBtn:"nobody got it 🙅",
+  wrongName:"wrong name? ✏️",
+  wordsLbl:"Words", modeLbl:"Game mode",
+  mClassic:"Classic", mRace:"Race", mBattle:"Knockout", mQuick:"Quick play",
+  hintClassic:g=>`First to ${g} 🎤 wins`,
+  hintRace:`🎤 = +1 space, 🔇 = −1. First to ${RACE_LEN} wins`,
+  hintBattle:"2× 🔇 = out. Last one standing wins",
+  hintQuick:r=>`${r} rounds — most 🎤 wins`,
+  goalLbl:"Win at 🎤 ×", roundsLbl:"Rounds", advanced:"more options",
+  grabTimeLbl:"Grab time per card", singTimeLbl:"Sing timer", off:"off",
+  listenLbl:"Sing detection",
+  mic:"🎙️ Listen mode", micHint:"The phone hears when you sing (no recording)",
+  sensLbl:"Sensitivity", sensLow:"Calm", sensMed:"Normal", sensHigh:"Sensitive",
+  modifiers:"House rules",
+  steal:"😈 Steal", stealHint:"On a rejection, another player may try the word",
+  solo:"🎤 Solo artists", soloHint:"No help from the group",
+  volume:"📢 Full volume", volumeHint:"Whispering doesn't count",
+  start:"START ▶",
+  tableNote:"Lay the phone flat in the middle. Everyone gets their own zone. Tap too soon and you skip this card!",
+  getReady:"get ready…", grabNow:"GRAB IT — tap your zone!",
+  tooSoon:n=>`${n}: TOO SOON! 🙈`, nobody:"Nobody? New card!",
+  allMuted:"Everyone muted? All back in!",
+  faster:(w,ms,l)=>`${w} beat ${l} by ${(ms/1000).toFixed(2)}s!`,
+  micListening:"🎙️ listening… start singing!", micHeard:"heard you! 🎶",
+  keepSinging:"Heard you! Keep singing till the clock runs out 🎶",
+  micCalibrating:"🎙️ calibrating microphone…",
+  micDenied:"Microphone denied — use the button below.",
+  micUnavailable:"No microphone — use the button below.",
+  micReady:n=>`Microphone ready (${n})`, orTap:"…or tap here",
+  hasMic:"has the mic!", singPrompt:"Sing a real song lyric containing this word",
+  singing:"SINGING! 🎶", giveUp:"🙈 gives up",
+  judgeNote:"Only another player presses the button once the singing starts.",
+  noTimer:"no timer — judges, stay sharp!",
+  sangWith:"sang with the word",
+  votePrompt:"Was it a real, recognizable lyric with the word?",
+  voteYes:"✅ COUNTS", voteNo:"❌ NO WAY",
+  voteNote:"The group decides by majority. The singer doesn't vote.",
+  stealTitle:"STEAL!", stealPrompt:"Who dares to sing this word instead? Same rules, same risk.",
+  stealSkip:"nobody dares →",
+  plusOne:n=>`${n} +1 🎤`, gotMute:n=>`${n} gets a 🔇`,
+  tooLate:"TOO LATE! 🔇", gaveUp:n=>`${n} gives up 🔇`,
+  eliminated:n=>`${n} is out! 💀`,
+  overtime:"TIED! Sudden death 🔥",
+  deckReshuffled:"All words used — reshuffled!",
+  nextCard:"NEXT CARD ▶", histBtn:"📜 sung words",
+  roundOf:(a,b)=>`round ${a} of ${b}`, spacesLbl:s=>`${s}/${RACE_LEN}`,
+  winner:"WINNER", rematch:"REMATCH", newPlayers:"new players",
+  howTitle:"How to play",
+  howBody:`<p><b>1. Put an object in the middle</b> — a spoon, a coaster, your keys. That's the mic. Hands flat on the table, phone upright so everyone can read it.</p>
+  <p><b>2. A word appears</b> after 3-2-1. Whoever grabs the object first sings. Then tap that name on screen — it's only registration, so a mis-tap can still be corrected.</p>
+  <p><b>3. Sing</b> a real, existing song that contains the word (variations allowed: WIN → WINNER). The clock counts your singing time — sing it out! The app registers whether you actually sang; nothing heard when time is up = miss.</p>
+  <p><b>4. Vote</b> — the group decides if it counts. Approved = 🎤. Rejected or too late = 🔇 and you miss the next card.</p>
+  <p><b>5. Win</b> — Classic: first to the token goal. Race: first across the finish. Knockout: 2× 🔇 = out. Quick play: most 🎤 after all rounds.</p>
+  <p>🎙️ <b>Listen mode</b> (on by default): the phone hears when you start singing and stops the clock — no recording, only loudness. Turn it off or tune the sensitivity under "more options". The button always works as a fallback.</p>
+  <p>🔁 Same song twice in one game? The group may reject it — check the "sung words" list.</p>
+  <p>📱 <b>No object handy?</b> Switch "Tapping" on under the players. The phone then lies flat in the middle and everyone gets their own colored zone; tap too soon and you skip the card. Works up to 8 players.</p>
+  <p>👥 Big group (7+)? An object handles that fine. If you play with tapping, a tablet works best.</p>`,
+  pauseTitle:"Paused",
+  pauseAdd:"+ add", pauseResume:"KEEP PLAYING ▶", pauseHist:"📜 sung words",
+  pauseQuit:"✕ end game", quitConfirm:"End the game? The score will be lost.",
+  histTitle:"Sung words", histEmpty:"Nothing sung yet.",
+  resumeBanner:"Game on!", newName:"name…"
+}};
+
+/* ================= PREFS & STATE ================= */
+const PREFS_KEY = "sas.prefs", SESSION_KEY = "sas.session";
+let prefs = { lang: (navigator.language||"nl").startsWith("nl") ? "nl" : "en", sound: true, setup: null };
+try{ Object.assign(prefs, JSON.parse(localStorage.getItem(PREFS_KEY)||"{}")); }catch(e){}
+function savePrefs(){ try{ localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); }catch(e){} }
+function t(key, ...a){ const v = (STR[prefs.lang]||STR.nl)[key]; return typeof v==="function" ? v(...a) : v; }
+
+const S = {
+  players: [],            // {name,color,tokens,mutes,space,mutedNext,lockedCard,deadRound,out}
+  settings: { deckMode:"nl", mode:"classic", goal:5, rounds:15, grabTime:15, singSecs:10,
+              grabMode:"prop", steal:false, solo:false, volume:false, mic:true, micSens:"med" },
+  micOn: false,           // mic actually running this session
+  deck: [], word: "",
+  grabber: -1, stealer: -1, stealing: false,
+  roundsPlayed: 0, history: [],
+  phase: "home",
+  grabTimeStamp: 0
+};
+let noGrabT = null, cdIv = null;
+
+function saveSession(){
+  try{
+    const { players, settings, deck, word, roundsPlayed, history } = S;
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ players, settings, deck, word, roundsPlayed, history }));
+  }catch(e){}
+}
+function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
+function loadSession(){
+  try{ const d = JSON.parse(localStorage.getItem(SESSION_KEY)||"null");
+    return (d && d.players && d.players.length >= MIN_PLAYERS) ? d : null;
+  }catch(e){ return null; }
+}
+/* Sessions and prefs stored before object mode existed have no grabMode. */
+function normalizeSettings(){
+  if(S.settings.grabMode !== "zones") S.settings.grabMode = "prop";
+  if(S.players.length > ZONE_MAX) S.settings.grabMode = "prop";
+}
+const isProp = () => S.settings.grabMode === "prop";
+
+/* ================= AUDIO (Web Audio, synthesized) ================= */
+let actx = null;
+function ac(){ const A = window.AudioContext||window.webkitAudioContext;
+  if(!actx) actx = new A(); if(actx.state==="suspended") actx.resume(); return actx; }
+function tone(f, dur, {type="square", vol=0.18, slide=0, when=0}={}){
+  if(!prefs.sound) return;
+  try{
+    const c = ac(), tt = c.currentTime + when;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, tt);
+    if(slide) o.frequency.exponentialRampToValueAtTime(Math.max(30,f+slide), tt+dur);
+    g.gain.setValueAtTime(vol, tt); g.gain.exponentialRampToValueAtTime(0.001, tt+dur);
+    o.connect(g).connect(c.destination); o.start(tt); o.stop(tt+dur+0.05);
+  }catch(e){}
+}
+const snd = {
+  tick(){ tone(900,.07,{vol:.12}); },
+  reveal(){ tone(520,.12,{type:"sawtooth"}); tone(780,.18,{type:"sawtooth",when:.1}); },
+  airhorn(){ for(const d of [0,.12,.24]) tone(440,.28,{type:"sawtooth",vol:.22,slide:-60,when:d});
+             tone(880,.6,{type:"sawtooth",vol:.1,slide:-80}); },
+  clocktick(){ tone(1400,.05,{vol:.15}); },
+  buzzer(){ tone(140,.8,{type:"square",vol:.28}); tone(110,.8,{type:"square",vol:.2,when:.02}); },
+  yes(){ [523,659,784,1046].forEach((f,i)=>tone(f,.18,{type:"triangle",vol:.2,when:i*.09})); },
+  no(){ [392,330,262,196].forEach((f,i)=>tone(f,.22,{type:"sawtooth",vol:.16,when:i*.14})); },
+  early(){ tone(200,.25,{type:"square",vol:.2,slide:-80}); },
+  fanfare(){ [523,523,659,784,1046,784,1046].forEach((f,i)=>tone(f,.22,{type:"triangle",vol:.2,when:i*.13})); },
+  boom(){ tone(90,.7,{type:"sawtooth",vol:.3,slide:-40}); },
+  heard(){ tone(660,.12,{type:"triangle",vol:.18}); tone(990,.15,{type:"triangle",vol:.18,when:.09}); }
+};
+function buzz(pat){ try{ navigator.vibrate && navigator.vibrate(pat); }catch(e){} }
+
+/* ================= MIC LISTENING (volume-only, no recording) ================= */
+/* Live RMS metering: a rolling noise floor is tracked while quiet; sustained
+   sound above a sensitivity-scaled threshold auto-stops the sing clock.
+   Nothing is ever recorded or stored — only the instantaneous loudness. */
+/* Tuning ladder (playtest iteration): "Normaal" is deliberately VERY sensitive,
+   "Rustig" equals the previous — too hard to trigger — calibration. Playtest on
+   Normaal, step to Rustig if chatter over-triggers, then pin a value in between. */
+const SENS = { // {mult over floor, absolute floor delta, minimum threshold}
+  low:  { mult:1.4,  add:0.003,  min:0.006 },  // "Rustig" — the old bar (firm voice)
+  med:  { mult:1.2,  add:0.0015, min:0.003 },  // "Normaal" — very sensitive test setting
+  high: { mult:1.1,  add:0.0008, min:0.002 }   // "Gevoelig" — extreme: barely above the floor
+};
+const FLOOR_MIN = 0.0015, FLOOR_MAX = 0.012;  // clamp so a noisy calibration can't inflate the bar
+const MIC_SUSTAIN_MS = 250;   // must stay loud this long to count as "singing"
+const MIC_GRACE_MS = 400;     // ignore the first moments (own grab-airhorn tail, screen tap)
+const mic = { stream:null, analyser:null, data:null, floor:0.005, level:0,
+              ready:false, denied:false, calibrating:false };
+const clampFloor = v => Math.min(FLOOR_MAX, Math.max(FLOOR_MIN, v));
+
+async function micInit(){
+  if(mic.ready || mic.denied) return mic.ready;
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ mic.denied = true; return false; }
+  try{
+    // AGC ON: the phone lies flat in the middle, singers are an arm's length away —
+    // auto gain boosts a distant voice into range. EC ON so the app's own speaker
+    // sounds don't trip the (now low) threshold. NS off: it can eat sustained notes.
+    mic.stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:false, autoGainControl:true } });
+    const c = ac();
+    const src = c.createMediaStreamSource(mic.stream);
+    mic.analyser = c.createAnalyser();
+    mic.analyser.fftSize = 1024;
+    mic.data = new Float32Array(mic.analyser.fftSize);
+    src.connect(mic.analyser);          // NOT connected to destination → no feedback, no playback
+    mic.ready = true; mic.floor = 0.008;
+    S.micOn = true;
+    micCalibrate();
+    return true;
+  }catch(e){ mic.denied = true; S.micOn = false; return false; }
+}
+function micSignal(){
+  // RMS + peak combined: singing is peaky (high crest factor), steady room hum
+  // is not — taking max(rms, peak*0.35) lets a voice register at a distance
+  // without dragging the noise floor up along with it.
+  if(!mic.analyser) return 0;
+  mic.analyser.getFloatTimeDomainData(mic.data);
+  let sum = 0, peak = 0;
+  for(let i=0;i<mic.data.length;i++){
+    const v = mic.data[i]; sum += v*v;
+    const a = v<0 ? -v : v; if(a>peak) peak = a;
+  }
+  return Math.max(Math.sqrt(sum / mic.data.length), peak*0.35);
+}
+function micCalibrate(){
+  // sample ~800ms of ambient sound → noise floor
+  mic.calibrating = true;
+  const t0 = performance.now(); let acc = 0, n = 0;
+  (function loop(){
+    if(!mic.ready) { mic.calibrating = false; return; }
+    acc += micSignal(); n++;
+    if(performance.now()-t0 < 800){ requestAnimationFrame(loop); }
+    else { mic.floor = clampFloor(acc/Math.max(1,n)); mic.calibrating = false; }
+  })();
+}
+function micThreshold(){
+  const s = SENS[S.settings.micSens] || SENS.med;
+  let thr = Math.max(mic.floor * s.mult, mic.floor + s.add, s.min);
+  if(S.settings.volume) thr *= 1.5;   // "Full volume" modifier demands more
+  return thr;
+}
+function micStop(){
+  try{ if(mic.stream) mic.stream.getTracks().forEach(tr=>tr.stop()); }catch(e){}
+  mic.stream = null; mic.analyser = null; mic.ready = false; mic.denied = false;
+  mic.level = 0; S.micOn = false;
+}
+
+/* ================= HELPERS ================= */
+const $ = id => document.getElementById(id);
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+  $(id).classList.add("on");
+  $("pauseBtn").style.display = (id==="scr-arena"||id==="scr-score") ? "block" : "none";
+}
+function overlay(id, on){ $(id).classList.toggle("on", on); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function buildDeck(){
+  const m = S.settings.deckMode;
+  const w = m==="mix" ? DECKS.nl.concat(DECKS.en) : DECKS[m].slice();
+  S.deck = shuffle(w);
+}
+function esc(s){ const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
+function alivePlayers(){ return S.players.filter(p=>!p.out); }
+function newPlayer(name, i){
+  return { name, color: COLORS[i % COLORS.length], tokens:0, mutes:0, space:0,
+           mutedNext:false, lockedCard:false, deadRound:false, out:false };
+}
+
+/* ================= I18N APPLY ================= */
+function applyLang(){
+  document.documentElement.lang = prefs.lang;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const v = t(el.dataset.i18n);
+    if(typeof v === "string") el.textContent = v;
+  });
+  $("homeNew").textContent = t("newGame");
+  $("homeResume").textContent = "▶ " + t("resume");
+  $("homeHow").textContent = t("howBtn");
+  $("addPlayer").textContent = t("addPlayer");
+  $("startBtn").textContent = t("start");
+  $("singingBtn").textContent = t("singing");
+  $("giveUpBtn").textContent = t("giveUp");
+  $("voteYes").textContent = t("voteYes");
+  $("voteNo").textContent = t("voteNo");
+  $("stealSkip").textContent = t("stealSkip");
+  $("nextBtn").textContent = t("nextCard");
+  $("histBtn").textContent = t("histBtn");
+  $("rematchBtn").textContent = t("rematch");
+  $("newGameBtn").textContent = t("newPlayers");
+  $("pauseAdd").textContent = t("pauseAdd");
+  $("pauseResume").textContent = t("pauseResume");
+  $("pauseHist").textContent = t("pauseHist");
+  $("pauseQuit").textContent = t("pauseQuit");
+  $("howBody").innerHTML = t("howBody");
+  $("newPlayerName").placeholder = t("newName");
+  document.querySelectorAll("#players input").forEach((inp,i)=> inp.placeholder = t("playerN", i+1));
+  $("langSeg").querySelectorAll("button").forEach(b=>b.classList.toggle("sel", b.dataset.v===prefs.lang));
+  $("nobodyBtn").textContent = t("nobodyBtn");
+  document.querySelectorAll(".fixBtn").forEach(b => b.textContent = t("wrongName"));
+  updateModeHint();
+  updateGrabModeUI();
+}
+
+/* ================= HOME ================= */
+$("homeNew").onclick = () => { ac(); show("scr-setup"); };
+$("homeHow").onclick = () => overlay("ov-howto", true);
+$("howClose").onclick = () => overlay("ov-howto", false);
+$("langSeg").querySelectorAll("button").forEach(b => b.onclick = () => {
+  prefs.lang = b.dataset.v; savePrefs(); applyLang();
+});
+$("homeResume").onclick = () => {
+  const d = loadSession(); if(!d) return;
+  ac();
+  Object.assign(S, d);
+  normalizeSettings();
+  S.players.forEach(p=>{ p.lockedCard=false; p.deadRound=false; });
+  S.grabber = -1; S.stealer = -1; S.stealing = false;
+  // the in-flight word (if any) was possibly seen — discard it, no repeats
+  S.word = "";
+  S.phase = "score";
+  $("scoreBanner").textContent = t("resumeBanner");
+  $("scoreBanner").className = "banner display good";
+  renderBoard($("board"));
+  renderRoundInfo();
+  show("scr-score");
+  keepAwake();
+};
+function refreshHome(){
+  $("homeResume").style.display = loadSession() ? "" : "none";
+}
+
+/* ================= SETUP ================= */
+function playerRow(i){
+  const d = document.createElement("div"); d.className = "prow";
+  d.innerHTML = `<span class="dot" style="background:${COLORS[i%COLORS.length]}"></span>
+    <input maxlength="10" placeholder="${esc(t("playerN", i+1))}">
+    <button class="rm" title="✕">✕</button>`;
+  d.querySelector(".rm").onclick = () => {
+    if($("players").children.length > MIN_PLAYERS){ d.remove(); recolor(); updateGrabModeUI(); }
+  };
+  return d;
+}
+function recolor(){
+  [...$("players").children].forEach((r,i)=>{
+    r.querySelector(".dot").style.background = COLORS[i%COLORS.length];
+    r.querySelector("input").placeholder = t("playerN", i+1);
+  });
+}
+$("addPlayer").onclick = () => {
+  const n = $("players").children.length;
+  if(n < MAX_PLAYERS){ $("players").appendChild(playerRow(n)); updateGrabModeUI(); }
+};
+for(let i=0;i<2;i++) $("players").appendChild(playerRow(i));
+
+function segInit(segId, onSel){
+  $(segId).querySelectorAll("button").forEach(b => b.onclick = () => {
+    $(segId).querySelectorAll("button").forEach(x=>x.classList.remove("sel"));
+    b.classList.add("sel");
+    onSel(b.dataset.v);
+  });
+}
+function segSet(segId, v){
+  $(segId).querySelectorAll("button").forEach(b=>b.classList.toggle("sel", b.dataset.v===String(v)));
+}
+segInit("deckSeg",  v => { S.settings.deckMode = v; });
+segInit("modeSeg",  v => { S.settings.mode = v; updateModeUI(); });
+segInit("goalSeg",  v => { S.settings.goal = +v; updateModeHint(); });
+segInit("roundsSeg",v => { S.settings.rounds = +v; updateModeHint(); });
+segInit("grabSeg",  v => { S.settings.grabTime = +v; });
+segInit("grabModeSeg", v => { S.settings.grabMode = v; updateGrabModeUI(); });
+segInit("singSeg",  v => { S.settings.singSecs = +v; });
+segInit("sensSeg",  v => { S.settings.micSens = v; });
+function togInit(id, key, after){
+  $(id).onclick = () => { S.settings[key] = !S.settings[key]; $(id).classList.toggle("on", S.settings[key]); if(after) after(); };
+}
+togInit("togSteal","steal"); togInit("togSolo","solo"); togInit("togVolume","volume");
+togInit("togMic","mic", updateMicUI);
+function updateMicUI(){ $("sensRow").style.display = S.settings.mic ? "" : "none"; }
+
+/* Keeps the grab-mode choice honest: tap mode is unavailable above ZONE_MAX
+   players, and the per-card grab timer only exists in tap mode (in object mode
+   a slow tap is registration lag, not a slow grab — see startRound). */
+function updateGrabModeUI(){
+  const tooMany = $("players").children.length > ZONE_MAX;
+  $("grabModeSeg").querySelector('[data-v="zones"]').disabled = tooMany;
+  if(tooMany && S.settings.grabMode === "zones") S.settings.grabMode = "prop";
+  segSet("grabModeSeg", S.settings.grabMode);
+  $("grabTimeOpt").style.display = isProp() ? "none" : "";
+  $("addPlayer").style.display = $("players").children.length >= MAX_PLAYERS ? "none" : "";
+  $("setupNote").textContent = isProp()
+    ? t("propNote") + (tooMany ? " " + t("zonesMax") : "")
+    : t("tableNote");
+}
+function updateModeUI(){
+  $("goalOpt").style.display   = S.settings.mode==="classic" ? "" : "none";
+  $("roundsOpt").style.display = S.settings.mode==="quick"   ? "" : "none";
+  updateModeHint();
+}
+function updateModeHint(){
+  const m = S.settings.mode;
+  $("modeHint").textContent =
+    m==="classic" ? t("hintClassic", S.settings.goal) :
+    m==="race"    ? t("hintRace") :
+    m==="battle"  ? t("hintBattle") : t("hintQuick", S.settings.rounds);
+}
+function restoreSetupPrefs(){
+  if(!prefs.setup) return;
+  Object.assign(S.settings, prefs.setup);
+  normalizeSettings();
+  segSet("deckSeg", S.settings.deckMode); segSet("modeSeg", S.settings.mode);
+  segSet("goalSeg", S.settings.goal); segSet("roundsSeg", S.settings.rounds);
+  segSet("grabSeg", S.settings.grabTime); segSet("singSeg", S.settings.singSecs);
+  segSet("sensSeg", S.settings.micSens);
+  $("togSteal").classList.toggle("on", S.settings.steal);
+  $("togSolo").classList.toggle("on", S.settings.solo);
+  $("togVolume").classList.toggle("on", S.settings.volume);
+  $("togMic").classList.toggle("on", S.settings.mic);
+  updateMicUI();
+  updateModeUI();
+  updateGrabModeUI();
+}
+$("backHome").onclick = () => { refreshHome(); show("scr-home"); };
+$("startBtn").onclick = () => {
+  const rows = [...$("players").children];
+  S.players = rows.map((r,i)=> newPlayer(r.querySelector("input").value.trim() || t("playerN", i+1), i));
+  if(S.players.length < MIN_PLAYERS) return;
+  prefs.setup = { ...S.settings }; savePrefs();
+  ac(); buzz(20);
+  S.roundsPlayed = 0; S.history = []; S.overtime = false;
+  if(S.settings.mic) micInit();     // request permission on this gesture; calibrates in background
+  buildDeck(); keepAwake(); startRound();
+};
+
+/* ================= ARENA: wedges ================= */
+function drawZones(){
+  const svg = $("zones"), W = innerWidth, H = innerHeight;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = "";
+  const cx = W/2, cy = H/2, R = Math.hypot(W,H);
+  const n = S.players.length, off = -Math.PI/2;
+  S.players.forEach((p,i)=>{
+    const a0 = off + i*2*Math.PI/n, a1 = off + (i+1)*2*Math.PI/n;
+    const x0 = cx + R*Math.cos(a0), y0 = cy + R*Math.sin(a0);
+    const x1 = cx + R*Math.cos(a1), y1 = cy + R*Math.sin(a1);
+    const path = document.createElementNS("http://www.w3.org/2000/svg","path");
+    path.setAttribute("d", n===1 ? `M 0 0 H ${W} V ${H} H 0 Z`
+      : `M ${cx} ${cy} L ${x0} ${y0} A ${R} ${R} 0 0 1 ${x1} ${y1} Z`);
+    path.setAttribute("fill", p.color);
+    path.setAttribute("class", "wedge");
+    path.dataset.i = i;
+    if(p.deadRound || p.lockedCard || p.out) path.classList.add("dead");
+    path.addEventListener("pointerdown", onZoneTap, {passive:false});
+    svg.appendChild(path);
+    const am = (a0+a1)/2, lr = Math.min(W,H)*0.40;
+    const lx = cx + lr*Math.cos(am), ly = cy + lr*Math.sin(am);
+    let deg = am*180/Math.PI + 90; if(deg>90 && deg<270) deg -= 180;
+    const el = document.createElementNS("http://www.w3.org/2000/svg","text");
+    el.setAttribute("x", lx); el.setAttribute("y", ly);
+    el.setAttribute("text-anchor","middle");
+    el.setAttribute("transform", `rotate(${deg} ${lx} ${ly})`);
+    el.setAttribute("class","zlabel");
+    el.textContent = (p.out ? "💀 " : p.deadRound ? "🔇 " : p.lockedCard ? "🙈 " : "") + p.name;
+    svg.appendChild(el);
+  });
+}
+addEventListener("resize", ()=>{
+  if(!isProp() && (S.phase==="countdown"||S.phase==="grab")) drawZones();
+});
+
+/* ================= ARENA: name buttons (object mode) ================= */
+function renderPicks(){
+  const g = $("pickGrid"); g.innerHTML = "";
+  S.players.forEach((p,i)=>{
+    if(p.out) return;
+    const b = document.createElement("button");
+    b.className = "pick" + (p.deadRound ? " dead" : "");
+    b.style.background = p.color;
+    b.textContent = (p.deadRound ? "🔇 " : "") + p.name;
+    b.onclick = () => onPick(i);
+    g.appendChild(b);
+  });
+}
+function onPick(i){
+  if(S.phase !== "grab") return;
+  const p = S.players[i];
+  if(!p || p.out || p.deadRound) return;
+  grabbedBy(i);
+}
+$("nobodyBtn").onclick = () => {
+  if(S.phase !== "grab") return;
+  S.phase = "between";
+  flash(t("nobody")); snd.no();
+  setTimeout(startRound, 900);
+};
+
+function flash(msg){
+  const f = $("flash"); f.textContent = msg; f.style.display = "block";
+  clearTimeout(f._t); f._t = setTimeout(()=>f.style.display="none", 1500);
+}
+
+/* ================= ROUND FLOW ================= */
+function drawWord(){
+  if(S.deck.length===0){ buildDeck(); flash(t("deckReshuffled")); }
+  S.word = S.deck.pop();
+}
+function startRound(){
+  clearTimeout(noGrabT); clearInterval(cdIv);
+  drawWord();
+  S.grabber = -1; S.stealer = -1; S.stealing = false;
+  S.players.forEach(p => {
+    p.lockedCard = false;
+    p.deadRound = p.mutedNext && !p.out;   // sit out exactly this card
+    p.mutedNext = false;
+  });
+  // If EVERY playable player is muted (e.g. grabber + stealer both failed the
+  // same card), nobody could grab and the game would stall — forgive them all.
+  const activeP = S.players.filter(p => !p.out);
+  const allMuted = activeP.length > 0 && activeP.every(p => p.deadRound);
+  if(allMuted) activeP.forEach(p => { p.deadRound = false; });
+  S.phase = "countdown";
+  saveSession();
+  const prop = isProp();
+  $("scr-arena").classList.toggle("prop", prop);
+  show("scr-arena");
+  if(prop){ renderPicks(); $("propPick").classList.remove("armed"); $("pickLabel").textContent = t("propReady"); }
+  else drawZones();
+  if(allMuted) flash(t("allMuted"));
+  $("word").style.display = "none";
+  $("cd").style.display = "block";
+  $("discHint").textContent = t("getReady");
+  let c = 3;
+  $("cd").textContent = c; snd.tick();
+  cdIv = setInterval(()=>{
+    c--;
+    if(c>0){ $("cd").textContent = c; snd.tick(); }
+    else{
+      clearInterval(cdIv); cdIv = null;
+      if(S.phase!=="countdown") return;
+      // nobody left who can grab (all early-tap locked/muted)? skip straight
+      // to a fresh card instead of stalling — vital when grab time is set to ∞
+      if(!S.players.some(p => !p.out && !p.deadRound && !p.lockedCard)){
+        S.phase = "between";
+        flash(t("nobody")); snd.no();
+        setTimeout(startRound, 900);
+        return;
+      }
+      S.phase = "grab"; S.grabTimeStamp = 0;
+      $("cd").style.display = "none";
+      $("word").textContent = S.word; $("word").style.display = "block";
+      $("discHint").textContent = prop ? t("grabNowProp") : t("grabNow");
+      snd.reveal();
+      if(prop){
+        // The physical grab already decided it; tapping a name is only
+        // registration, so there is no auto-discard timer here — a group still
+        // laughing five seconds later must not lose a valid grab. The explicit
+        // "nobody" button ends the card instead.
+        $("pickLabel").textContent = t("propWho");
+        $("propPick").classList.add("armed");
+      }else{
+        drawZones();
+        if(S.settings.grabTime > 0){
+          noGrabT = setTimeout(()=>{
+            if(S.phase==="grab"){
+              S.phase="between"; flash(t("nobody")); snd.no();
+              setTimeout(startRound, 900);
+            }
+          }, S.settings.grabTime*1000);
+        }
+      }
+    }
+  }, 800);
+}
+
+function onZoneTap(e){
+  e.preventDefault();
+  const i = +e.currentTarget.dataset.i, p = S.players[i];
+  if(!p || p.out) return;
+  if(S.phase === "countdown"){
+    if(!p.lockedCard && !p.deadRound){
+      p.lockedCard = true; snd.early(); buzz(60);
+      flash(t("tooSoon", p.name)); drawZones();
+    }
+    return;
+  }
+  if(S.phase !== "grab"){
+    if(S.phase==="grabbed" && S.grabTimeStamp && performance.now()-S.grabTimeStamp < 250 && i !== S.grabber){
+      const ms = Math.round(performance.now()-S.grabTimeStamp);
+      flash(t("faster", S.players[S.grabber].name, ms, p.name));
+    }
+    return;
+  }
+  if(p.deadRound || p.lockedCard) return;
+  grabbedBy(i);
+}
+
+function grabbedBy(i){
+  S.phase = "grabbed"; S.grabber = i; S.grabTimeStamp = performance.now();
+  clearTimeout(noGrabT);
+  snd.airhorn(); buzz([30,40,30]);
+  setTimeout(startSing, 600);
+}
+
+/* ================= WRONG-NAME CORRECTION =================
+   Object mode only. There the tap is bookkeeping, not the race result, so a
+   mis-tap must be undoable before a token is handed out. In tap mode the tap
+   IS the result and rewriting it would just be griefable. */
+let singRAF = null;
+function currentSinger(){ return S.players[S.stealing ? S.stealer : S.grabber]; }
+function setSinger(i){
+  if(S.stealing) S.stealer = i; else S.grabber = i;
+  $("singerName").textContent = S.players[i].name;
+  $("voteName").textContent = S.players[i].name;
+}
+function closeFixGrids(){ document.querySelectorAll(".fixgrid").forEach(g=>g.classList.remove("on")); }
+function syncFixButtons(){
+  const on = isProp();
+  document.querySelectorAll(".fixBtn").forEach(b => b.style.display = on ? "" : "none");
+  if(!on) closeFixGrids();
+}
+document.querySelectorAll(".fixBtn").forEach(btn => {
+  const grid = $(btn.dataset.grid);
+  btn.onclick = () => {
+    if(grid.classList.contains("on")){ grid.classList.remove("on"); return; }
+    grid.innerHTML = "";
+    const cur = S.stealing ? S.stealer : S.grabber;
+    S.players.forEach((p,i)=>{
+      if(p.out || p.deadRound || i === cur) return;
+      const b = document.createElement("button");
+      b.className = "pick sm"; b.style.background = p.color; b.textContent = p.name;
+      b.onclick = () => { setSinger(i); grid.classList.remove("on"); };
+      grid.appendChild(b);
+    });
+    grid.classList.add("on");
+  };
+});
+function startSing(){
+  S.phase = "sing";
+  show("scr-sing");
+  closeFixGrids(); syncFixButtons();
+  $("singerName").textContent = currentSinger().name;
+  $("voteName").textContent = currentSinger().name;
+  $("singWord").textContent = S.word;
+  const chips = $("singChips"); chips.innerHTML = "";
+  if(S.settings.solo){ const c=document.createElement("span"); c.className="chip"; c.textContent=t("solo"); chips.appendChild(c); }
+  if(S.settings.volume){ const c=document.createElement("span"); c.className="chip"; c.textContent=t("volume"); chips.appendChild(c); }
+
+  const micActive = S.settings.mic && mic.ready;
+  const meter = $("micMeter"), fill = $("meterFill"), status = $("micStatus"), prog = $("ringProg");
+  meter.style.display = micActive ? "flex" : "none";
+  fill.classList.remove("loud"); status.classList.remove("hot");
+  prog.classList.remove("loud","heard");
+  $("singingBtn").style.display = "";
+  if(micActive){ status.textContent = t("micListening"); $("singNote").textContent = t("micHint"); }
+  else{
+    $("singNote").textContent = S.settings.mic ? (mic.denied ? t("micDenied") : t("micUnavailable")) : t("judgeNote");
+  }
+
+  const secs = S.settings.singSecs;
+  const hasTimer = secs > 0;
+  // performance-clock rule: with the timer on, you sing the FULL window.
+  // Detection (or the judge button) only *registers* that singing happened;
+  // the vote screen appears when the clock runs out. No registration → fail.
+  S.singReg = false; S.singHasTimer = hasTimer;
+  $("ring").style.display = hasTimer ? "" : "none";
+  if(!hasTimer && !micActive){
+    const c=document.createElement("span"); c.className="chip"; c.textContent="⏱ "+t("noTimer"); chips.appendChild(c);
+  }
+  const circ = 2*Math.PI*64;
+  prog.style.strokeDasharray = circ; prog.style.strokeDashoffset = 0;
+  const t0 = performance.now(), total = secs*1000;
+  let lastWhole = secs, lastNow = t0, loudMs = 0, lastDbg = 0;
+  const dbg = $("micDbg"); dbg.textContent = "";
+  $("ringNum").textContent = secs;
+
+  function frame(now){
+    if(S.phase !== "sing") return;
+    const dt = now - lastNow; lastNow = now;
+    // --- timer ---
+    if(hasTimer){
+      const left = Math.max(0, total-(now-t0));
+      prog.style.strokeDashoffset = circ * (1 - left/total);
+      const s = Math.ceil(left/1000);
+      $("ringNum").textContent = s;
+      if(s !== lastWhole){ lastWhole = s; if(s<=3 && s>0) snd.clocktick(); }
+      if(left<=0){
+        if(S.singReg) stopToVote(); else singFail(t("tooLate"));
+        return;
+      }
+    }
+    // --- mic detection ---
+    if(micActive){
+      const rms = (mic.testLevel != null) ? mic.testLevel : micSignal();
+      mic.level = mic.level*0.6 + rms*0.4;
+      const thr = micThreshold();
+      if(mic.level < thr) mic.floor = clampFloor(mic.floor*0.985 + mic.level*0.015);  // adapt when quiet
+      const loud = mic.level > thr;
+      fill.style.width = Math.min(100, mic.level/(thr*2)*100).toFixed(1) + "%";
+      fill.classList.toggle("loud", loud);
+      prog.classList.toggle("loud", loud);
+      if(now - lastDbg > 150){ // live tuning readout for playtests
+        lastDbg = now;
+        dbg.textContent = `mic ${mic.level.toFixed(4)} · trig ${thr.toFixed(4)}`;
+      }
+      if(!S.singReg){
+        if(now - t0 > MIC_GRACE_MS) loudMs = loud ? loudMs + dt : Math.max(0, loudMs - dt*0.6);
+        if(loudMs >= MIC_SUSTAIN_MS) registerSing();
+      }
+    }
+    singRAF = requestAnimationFrame(frame);
+  }
+  singRAF = requestAnimationFrame(frame);
+}
+function registerSing(){
+  // mark "we heard singing" — the round continues until the clock runs out
+  if(S.phase !== "sing" || S.singReg) return;
+  S.singReg = true;
+  snd.heard(); buzz(40);
+  const st = $("micStatus");
+  st.textContent = t("micHeard"); st.classList.add("hot");
+  $("ringProg").classList.add("heard");
+  if(S.singHasTimer){
+    $("singNote").textContent = t("keepSinging");
+    $("singingBtn").style.display = "none";
+  }
+}
+function stopToVote(){
+  if(S.phase !== "sing") return;
+  S.phase = "vote";
+  snd.heard(); buzz(40);
+  show("scr-vote");
+  closeFixGrids();
+  $("voteName").textContent = currentSinger().name;
+  $("voteWord").textContent = S.word;
+}
+$("singingBtn").onclick = () => {
+  if(S.phase !== "sing") return;
+  // with the timer on, the judge button registers (clock keeps running);
+  // without a timer it is the "done → vote" control
+  if(S.singHasTimer) registerSing(); else stopToVote();
+};
+$("giveUpBtn").onclick = () => {
+  if(S.phase !== "sing") return;
+  singFail(t("gaveUp", currentSinger().name));
+};
+function singFail(banner){
+  S.phase = "fail";
+  snd.buzzer(); buzz(200);
+  resolveAttempt(false, banner);
+}
+
+/* ================= VOTE ================= */
+$("voteYes").onclick = () => { if(S.phase!=="vote")return; snd.yes(); buzz([20,30,20]); resolveAttempt(true); };
+$("voteNo").onclick  = () => { if(S.phase!=="vote")return; snd.no();  buzz(120); resolveAttempt(false); };
+
+/* ================= RESULT / MODES ================= */
+function reward(p){
+  p.tokens++;
+  if(S.settings.mode==="race") p.space = Math.min(RACE_LEN, p.space+1);
+}
+function penalize(p){
+  p.mutedNext = true;
+  if(S.settings.mode==="battle"){
+    p.mutes++;
+    if(p.mutes >= 2){ p.out = true; p.mutedNext = false; }
+  }
+  if(S.settings.mode==="race") p.space = Math.max(0, p.space-1);
+}
+function checkWinner(){
+  const m = S.settings.mode, ps = S.players;
+  if(m==="classic"){ return ps.find(p=>p.tokens >= S.settings.goal) || null; }
+  if(m==="race"){ return ps.find(p=>p.space >= RACE_LEN) || null; }
+  if(m==="battle"){ const a = alivePlayers(); return a.length<=1 ? (a[0]||ps[0]) : null; }
+  if(m==="quick" && S.roundsPlayed >= S.settings.rounds){
+    const max = Math.max(...ps.map(p=>p.tokens));
+    const leaders = ps.filter(p=>p.tokens===max);
+    if(leaders.length===1) return leaders[0];
+    S.overtime = true;
+  }
+  return null;
+}
+function resolveAttempt(ok, bannerOverride){
+  const p = currentSinger();
+  S.history.push({ word:S.word, name:p.name, ok });
+  if(ok) reward(p); else penalize(p);
+  if(!S.stealing) S.roundsPlayed++;
+  const wasEliminated = p.out && S.settings.mode==="battle";
+  const winner = checkWinner();
+  saveSession();
+  if(winner) return win(winner);
+  // steal chance: only after a failed ORIGINAL attempt
+  if(!ok && !S.stealing && S.settings.steal){
+    const eligible = S.players.map((q,i)=>({q,i}))
+      .filter(({q,i}) => i!==S.grabber && !q.out && !q.deadRound);
+    if(eligible.length){ return showSteal(eligible, bannerOverride); }
+  }
+  showScore(ok, p, bannerOverride, wasEliminated);
+}
+function showScore(ok, p, bannerOverride, eliminated){
+  S.phase = "score";
+  let banner = bannerOverride || (ok ? t("plusOne", p.name) : t("gotMute", p.name));
+  if(eliminated){ banner = t("eliminated", p.name); snd.boom(); }
+  if(S.overtime && S.settings.mode==="quick" && S.roundsPlayed>=S.settings.rounds){
+    banner = t("overtime");
+  }
+  $("scoreBanner").textContent = banner;
+  $("scoreBanner").className = "banner display " + (ok ? "good" : "bad");
+  renderBoard($("board"));
+  renderRoundInfo();
+  show("scr-score");
+}
+function renderRoundInfo(){
+  $("roundInfo").textContent = S.settings.mode==="quick"
+    ? t("roundOf", Math.min(S.roundsPlayed+1, S.settings.rounds), S.settings.rounds) : "";
+}
+
+/* ================= STEAL ================= */
+function showSteal(eligible, pendingBanner){
+  S.phase = "steal";
+  S._pendingBanner = pendingBanner;
+  show("scr-steal");
+  $("stealWord").textContent = S.word;
+  const list = $("stealList"); list.innerHTML = "";
+  eligible.forEach(({q,i})=>{
+    const b = document.createElement("button");
+    b.className = "btn ice display";
+    b.textContent = q.name;
+    b.onclick = () => {
+      S.stealing = true; S.stealer = i;
+      snd.airhorn(); buzz(30);
+      startSing();
+    };
+    list.appendChild(b);
+  });
+}
+$("stealSkip").onclick = () => {
+  if(S.phase!=="steal") return;
+  showScore(false, S.players[S.grabber], S._pendingBanner);
+};
+
+/* ================= SCOREBOARD ================= */
+function renderBoard(el){
+  el.innerHTML = "";
+  const mode = S.settings.mode;
+  const sorted = [...S.players].sort((a,b)=>
+    mode==="race" ? b.space-a.space : b.tokens-a.tokens);
+  sorted.forEach(p=>{
+    const r = document.createElement("div");
+    r.className = "srow" + (p.out ? " outP" : p.mutedNext ? " mutedP" : "");
+    const status = p.out ? " 💀" : (p.mutedNext ? " 🔇" : "");
+    let right;
+    if(mode==="race"){
+      right = `<div class="bar"><div class="fill" style="width:${p.space/RACE_LEN*100}%"></div></div>
+               <span class="tok">${esc(t("spacesLbl", p.space))}</span>`;
+    }else{
+      const strikes = mode==="battle" ? " " + "⚡".repeat(p.mutes) : "";
+      right = `<span class="tok">${"🎤".repeat(p.tokens) || "—"}${strikes}</span>`;
+    }
+    r.innerHTML = `<span class="dot" style="background:${p.color}"></span>
+      <span class="nm">${esc(p.name)}${status}</span>${right}`;
+    el.appendChild(r);
+  });
+}
+$("nextBtn").onclick = () => startRound();
+$("histBtn").onclick = () => showHistory();
+
+/* ================= HISTORY ================= */
+function showHistory(){
+  const list = $("histList"); list.innerHTML = "";
+  if(S.history.length===0){
+    list.innerHTML = `<div style="color:var(--dim)">${esc(t("histEmpty"))}</div>`;
+  }else{
+    [...S.history].reverse().forEach(h=>{
+      const d = document.createElement("div"); d.className="h";
+      d.innerHTML = `<span class="w">${esc(h.word)}</span><span>${esc(h.name)}</span><span>${h.ok?"✅":"❌"}</span>`;
+      list.appendChild(d);
+    });
+  }
+  overlay("ov-hist", true);
+}
+$("histClose").onclick = () => overlay("ov-hist", false);
+
+/* ================= PAUSE ================= */
+$("pauseBtn").onclick = () => {
+  if(S.phase==="countdown" || S.phase==="grab"){
+    // freeze the round; the current word goes back on top of the deck
+    clearInterval(cdIv); clearTimeout(noGrabT);
+    if(S.word){ S.deck.push(S.word); S.word=""; }
+    S.phase = "paused-round";
+  }else if(S.phase==="score"){
+    S.phase = "paused-score";
+  }else return;
+  renderPausePlayers();
+  overlay("ov-pause", true);
+};
+function renderPausePlayers(){
+  const el = $("pausePlayers"); el.innerHTML = "";
+  S.players.forEach((p,i)=>{
+    const r = document.createElement("div"); r.className="srow";
+    r.innerHTML = `<span class="dot" style="background:${p.color}"></span>
+      <span class="nm">${esc(p.name)}${p.out?" 💀":""}</span>`;
+    const rm = document.createElement("button"); rm.className="rm"; rm.textContent="✕";
+    rm.onclick = () => {
+      if(S.players.length <= MIN_PLAYERS) return;
+      S.players.splice(i,1); S.grabber=-1; saveSession(); renderPausePlayers();
+    };
+    r.appendChild(rm);
+    el.appendChild(r);
+  });
+}
+$("pauseAdd").onclick = () => {
+  const name = $("newPlayerName").value.trim();
+  if(!name || S.players.length >= MAX_PLAYERS) return;
+  const used = new Set(S.players.map(p=>p.color));
+  const color = COLORS.find(c=>!used.has(c)) || COLORS[S.players.length % COLORS.length];
+  const p = newPlayer(name, 0); p.color = color;
+  S.players.push(p);
+  $("newPlayerName").value = "";
+  saveSession(); renderPausePlayers();
+};
+$("pauseResume").onclick = () => {
+  overlay("ov-pause", false);
+  if(S.phase==="paused-round"){ startRound(); }
+  else { S.phase="score"; renderBoard($("board")); renderRoundInfo(); show("scr-score"); }
+};
+$("pauseHist").onclick = () => showHistory();
+$("pauseQuit").onclick = () => {
+  if(!confirm(t("quitConfirm"))) return;
+  overlay("ov-pause", false);
+  clearSession(); micStop();
+  S.phase = "home"; refreshHome(); show("scr-home");
+};
+
+/* ================= WINNER ================= */
+function win(p){
+  S.phase = "win";
+  clearSession();
+  show("scr-win");
+  $("winName").textContent = p.name;
+  renderBoard($("winBoard"));
+  snd.fanfare(); buzz([40,60,40,60,120]);
+  const box = $("confetti"); box.innerHTML = "";
+  for(let i=0;i<70;i++){
+    const c = document.createElement("div"); c.className = "cf";
+    c.style.left = Math.random()*100 + "vw";
+    c.style.background = COLORS[i % COLORS.length];
+    c.style.animationDuration = (2+Math.random()*2.5) + "s";
+    c.style.animationDelay = Math.random()*1.2 + "s";
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    box.appendChild(c);
+  }
+}
+$("rematchBtn").onclick = () => {
+  S.players.forEach(p=>{ p.tokens=0; p.mutes=0; p.space=0; p.mutedNext=false; p.deadRound=false; p.lockedCard=false; p.out=false; });
+  S.roundsPlayed = 0; S.history = []; S.overtime = false;
+  buildDeck(); startRound();
+};
+$("newGameBtn").onclick = () => { clearSession(); location.reload(); };
+
+/* ================= SOUND / WAKELOCK / PWA ================= */
+$("sndToggle").onclick = e => {
+  prefs.sound = !prefs.sound; savePrefs();
+  e.target.textContent = prefs.sound ? "🔊" : "🔇";
+};
+let wakeLock = null;
+async function keepAwake(){
+  try{ if("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); }catch(e){}
+}
+document.addEventListener("visibilitychange", ()=>{
+  if(document.visibilityState==="visible" && S.phase!=="home" && S.phase!=="setup") keepAwake();
+});
+if(location.protocol.startsWith("http") && "serviceWorker" in navigator){
+  addEventListener("load", ()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
+}
+
+/* ================= INIT ================= */
+window.__sas = S; window.__mic = mic; window.__micThreshold = micThreshold; // debug/test handles
+
+$("sndToggle").textContent = prefs.sound ? "🔊" : "🔇";
+restoreSetupPrefs();
+$("togMic").classList.toggle("on", S.settings.mic);   // sync mic toggle even on a fresh install
+segSet("sensSeg", S.settings.micSens);
+updateMicUI();
+applyLang();
+refreshHome();
+</script>
+</body>
+</html>

@@ -4,16 +4,16 @@
 
 A party karaoke game for one shared phone. A word appears on screen; the first player to grab the mic must sing a real song lyric containing that word. The group votes on whether it counts. The phone replaces the card deck, the board, and the tokens.
 
-**Design principle:** the phone is a referee and scorekeeper, not the entertainment. All judging is human. No lyric database, no audio recognition — the group vote *is* the game.
+**Design principle:** the phone is a referee and scorekeeper, not the entertainment. All judging is human. No lyric database — the group vote *is* the game.
 
-**Grab modes:** the grab itself is physical by default — an object on the table (spoon, coaster, keys) stands in for the foam mic, and the phone only registers who got it. A screen-tap mode (radial zones) is available as a fallback when there is no object or no table.
+**Grab modes:** the grab itself is physical by default — an object on the table (spoon, coaster, keys) stands in for the foam mic, and the phone only registers who got it. A screen-tap mode (radial zones) remains available as a fallback when there is no object or no table.
 
 ## 2. Core game loop
 
 1. **Reveal** — A word card animates onto the screen (large type, readable from 2 m). Optional 3‑2‑1 countdown before reveal so nobody has a head start.
 2. **Grab** — Two modes, chosen at setup:
-   - **Object (default).** A prop lies in the middle; the phone stands where everyone can read it. Physical possession decides the grabber — no latency, no mis-registration, and the phone stays out of the scrum. Anyone then taps the grabber's name on screen; this is registration, not a race, so it is correctable (see Performance). No auto-discard timer — an explicit "nobody" button ends the card, because a slow tap must not be read as a slow grab. Anti-camping is a house rule shown on the setup screen: hands flat on the table until the word appears. Scales to 10 players.
-   - **Screen tap (fallback).** Phone lies flat in the middle; the screen is divided into radial colored wedges, one per player, name rotated toward them. First `touchstart` inside a zone wins. Near-simultaneous taps are resolved by event timestamp; if the margin is < 150 ms, show it ("beat Joer by 0.04s"). Touches during the reveal countdown lock that player out for the current card. Capped at 8 players; the mode is disabled in setup above that. Muted players' wedges are grey and dead.
+   - **Object (default).** A prop lies in the middle; the phone stands where everyone can read it. Physical possession decides the grabber — no latency, no mis-registration, and the phone stays out of the scrum. Anyone then taps the grabber's name on screen; this is registration, not a race, so it is correctable (see Performance) and there is no auto-discard timer — a group still laughing five seconds later must not lose a valid grab. An explicit "nobody" button ends the card instead. Anti-camping is a house rule shown on the setup screen: hands flat on the table until the word appears. Scales to 10 players.
+   - **Screen tap (fallback).** Phone lies flat in the middle; the screen is divided into radial colored wedges, one per player, name rotated toward them. First `touchstart` inside a zone wins. Near-simultaneous taps are resolved by event timestamp; if the margin is < 250 ms, show it ("beat Joer by 0.04s"). Touches during the reveal countdown lock that player out for the current card. Capped at 8 players; the mode is disabled in setup above that. Muted players' wedges are grey and dead.
 3. **Sing** — On grab: sing-cue sound plays and a countdown starts (default 10 s to start singing). Any *other* player taps "they're singing" to stop the clock (judges control it, not the grabber). Timeout → buzzer → automatic fail (Mute Token, no vote). The lyric must be from a real song and contain the word (variations allowed: WIN → WINNER).
 4. **Vote** — Two big buttons: ✅ counts / ❌ doesn't count. Majority of the group decides (host taps the result, or pass-the-phone voting in strict mode).
 5. **Score** — Approved: grabber earns a Mic Token. Rejected: grabber gets a Mute Token → locked out of the next round (their name greyed out on the grab screen).
@@ -35,7 +35,7 @@ A party karaoke game for one shared phone. A word appears on screen; the first p
 ## 4. Players & session setup
 
 - 2–10 players, names entered at session start (color auto-assigned; 10 distinct colors). Tap mode caps at 8 and is disabled above that.
-- Session settings: grab mode, game mode, deck(s), grab timeout, sing timer on/off, mute penalty severity.
+- Session settings: grab mode, game mode, deck(s), grab timeout (tap mode only), sing timer on/off, mic listening, modifiers.
 - Pause / resume mid-game; add or remove a player mid-session (late arrivals are common at parties).
 - No accounts, no login. Local-only state. A session survives app backgrounding.
 
@@ -50,10 +50,10 @@ A party karaoke game for one shared phone. A word appears on screen; the first p
 ## 6. Screens
 
 1. **Home** — New game, resume, deck store, settings, how-to-play.
-2. **Setup** — Player names, grab mode, deck selection, win condition, modifiers.
+2. **Setup** — Player names, mode, deck selection, modifiers.
 3. **Countdown/Reveal** — Full-screen word card.
-4. **Grab** — Object mode: word plus a grid of player-name buttons (armed only after reveal) and a "nobody" button. Tap mode: radial wedges; muted players shown locked.
-5. **Performance** — Grabber's name, the word, optional timer, "I sang it" → vote. Name is correctable here and on the vote screen, since a mis-tap in object mode would otherwise award the point to the wrong player.
+4. **Grab** — Object mode: the word plus a grid of player-name buttons, armed only after the reveal, and a "nobody" button. Tap mode: radial wedges; muted players shown locked.
+5. **Performance** — Grabber's name, the word, optional timer, "I sang it" → vote. In object mode the name is correctable here and on the vote screen, since a mis-tap would otherwise award the token to the wrong player. Hidden in tap mode, where the tap *is* the result and rewriting it would be griefable.
 6. **Vote** — ✅/❌; on rejection, optional Steal prompt.
 7. **Scoreboard** — Token counts / board positions; shown briefly between rounds, always accessible.
 8. **Winner** — Confetti, final standings, rematch button (same players, one tap).
@@ -105,4 +105,4 @@ A party karaoke game for one shared phone. A word appears on screen; the first p
 
 ## 11. MVP definition
 
-Classic mode, one English + one Dutch base deck (≥100 words each), 2–10 players, object-grab loop (with tap mode as fallback), vote/score, mute tokens, scoreboard, winner screen, rematch. Single HTML file, playable offline. Everything else is v1.1+.
+Classic mode, one English + one Dutch base deck (≥100 words each), 2–10 players, grab/vote/score loop, mute tokens, scoreboard, winner screen, rematch. Single HTML file, playable offline. Everything else is v1.1+.
