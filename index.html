@@ -1516,7 +1516,20 @@ document.addEventListener("visibilitychange", ()=>{
   if(document.visibilityState==="visible" && S.phase!=="home" && S.phase!=="setup") keepAwake();
 });
 if(location.protocol.startsWith("http") && "serviceWorker" in navigator){
-  addEventListener("load", ()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
+  // A page already under a worker's control keeps that worker's build until a
+  // new one takes over, so ask for an update check every visit and reload once
+  // when a newer worker claims the page. Without this a deploy can sit unseen.
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloading = false;
+  navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+    if(!hadController || reloading) return;   // first install: nothing to refresh
+    reloading = true; location.reload();
+  });
+  addEventListener("load", ()=>{
+    navigator.serviceWorker.register("sw.js")
+      .then(reg => reg.update())
+      .catch(()=>{});
+  });
 }
 
 /* ================= INIT ================= */
