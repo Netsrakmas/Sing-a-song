@@ -271,6 +271,71 @@ async function fillSetup(page, names, { singTimerOff = false, mode = null } = {}
   await page.context().close();
 }
 
+/* ═════════ 7. Legibility and reachable controls ═════════ */
+{
+  section('7. Type scale + nothing out of reach');
+  const { page, errors } = await newPage({ width: 360, height: 640 });
+  await page.click('#homeNew');
+  await fillSetup(page, ['Sam', 'Joer']);
+  await page.click('#startBtn');
+  await waitPhase(page, 'grab');
+
+  // the arena word is read across a table — it must dominate, not hide in the disc
+  const arena = await page.evaluate(() => {
+    const w = document.getElementById('word'), d = document.getElementById('centerDisc');
+    const px = el => parseFloat(getComputedStyle(el).fontSize);
+    const one = txt => { w.textContent = txt; window.__fitWord();
+      return { size: px(w), lines: Math.round(w.getBoundingClientRect().height / px(w)) }; };
+    return { disc: Math.round(d.getBoundingClientRect().width),
+             short: one('ZON'), long: one('REGENBOOG'), vw: innerWidth };
+  });
+  check('disc fills most of the width', arena.disc / arena.vw > 0.7, `${arena.disc}px of ${arena.vw}`);
+  check('short word set large', arena.short.size >= 44, `${arena.short.size}px`);
+  check('longest word still one line', arena.long.lines === 1 && arena.long.size >= 26,
+    `${arena.long.size}px, ${arena.long.lines} lines`);
+
+  await page.locator('#pickGrid .pick').nth(0).click();
+  await waitPhase(page, 'vote');
+  const vote = await page.evaluate(() => {
+    const w = document.getElementById('voteWord');
+    w.textContent = 'REGENBOOG'; window.__fitBigWord(w);
+    const s = parseFloat(getComputedStyle(w).fontSize);
+    const btn = document.getElementById('voteYes').getBoundingClientRect();
+    return { size: s, lines: Math.round(w.getBoundingClientRect().height / s), btnH: Math.round(btn.height) };
+  });
+  check('vote word large and unwrapped', vote.lines === 1 && vote.size >= 40,
+    `${vote.size}px, ${vote.lines} lines`);
+  check('vote buttons are big targets', vote.btnH >= 60, `${vote.btnH}px tall`);
+
+  await page.click('#voteYes');
+  await waitPhase(page, 'score');
+  check('scoreboard names readable',
+    await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('.srow .nm')).fontSize) >= 18));
+
+  await page.context().close();
+
+  // ten players on a short phone: the next-card button must stay reachable
+  const { page: p2, errors: e2 } = await newPage({ width: 360, height: 640 });
+  await p2.click('#homeNew');
+  await fillSetup(p2, Array.from({ length: 10 }, (_, i) => `Speler ${i + 1}`));
+  await p2.click('#startBtn');
+  await waitPhase(p2, 'grab');
+  await p2.locator('#pickGrid .pick').nth(0).click();
+  await waitPhase(p2, 'vote');
+  await p2.click('#voteYes');
+  await waitPhase(p2, 'score');
+  await p2.locator('#nextBtn').scrollIntoViewIfNeeded();
+  const reach = await p2.evaluate(() => {
+    const r = document.getElementById('nextBtn').getBoundingClientRect();
+    return { top: Math.round(r.top), bottom: Math.round(r.bottom), vh: innerHeight };
+  });
+  check('next-card button reachable with 10 players',
+    reach.top >= 0 && reach.bottom <= reach.vh, JSON.stringify(reach));
+  await p2.screenshot({ path: `${SHOTS}/07-score-10p.png` });
+  check('console clean', errors.length === 0 && e2.length === 0, [...errors, ...e2].join(' | '));
+  await p2.context().close();
+}
+
 /* ═════════ 6. Background covers a grown viewport ═════════ */
 {
   section('6. Background under a retracted URL bar');

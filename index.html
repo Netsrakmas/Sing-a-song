@@ -41,6 +41,11 @@ body{
   padding:24px;text-align:center;}
 .screen.on{display:flex;}
 .screen.scroll{justify-content:flex-start;overflow-y:auto;padding-top:max(24px,env(safe-area-inset-top,0px) + 14px);padding-bottom:40px;}
+/* Centred while it fits, scrolls once it doesn't — a ten-player scoreboard
+   pushed the "next card" button off a short screen with no way to reach it. */
+.screen.fitscroll{justify-content:flex-start;overflow-y:auto;}
+.screen.fitscroll > :first-child{margin-top:auto;}
+.screen.fitscroll > :last-child{margin-bottom:auto;}
 h1.logo{
   font-size:clamp(34px,10vw,58px);line-height:1.02;color:#fff;
   text-shadow:3px 3px 0 var(--neon), -2px -2px 0 var(--ice), 0 0 28px rgba(255,61,141,.45);
@@ -116,11 +121,24 @@ details.adv[open] summary::before{content:"▾ ";}
 #scr-arena.prop #arena{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
   overflow-y:auto;padding:calc(52px + env(safe-area-inset-top,0px)) 14px 22px;}
 /* auto margins: centred when it fits, scrolls from the top when it doesn't */
+/* This is the screen the whole table reads, and in object mode it is the only
+   screen during a round — so it gets the space. Capped on height too, so a
+   short phone doesn't push the name buttons off. */
 #scr-arena.prop #centerDisc{position:static;transform:none;flex:none;margin-top:auto;
-  width:min(52vw,230px);height:min(52vw,230px);}
-/* smaller disc than tap mode → step the word down so the longest entries
-   (REGENBOOG, BEAUTIFUL — 9 chars) still fit on one line */
-#scr-arena.prop #word{font-size:clamp(19px,6vw,32px);}
+  width:min(86vw,400px,44vh);height:min(86vw,400px,44vh);padding:18px;}
+/* Generous starting size — fitWord() scales it back down per word so short
+   entries (ZON) stay huge and the 9-letter ones still sit on one line. Sizing
+   for the worst case in CSS alone would shrink every word to REGENBOOG's. */
+#scr-arena.prop #word{font-size:clamp(30px,15vmin,84px);white-space:nowrap;}
+#scr-arena.prop #cd{font-size:clamp(72px,26vmin,120px);}
+/* Seven or more players: the name grid needs the room more than the disc does,
+   otherwise the "nobody" button drops off a short screen. */
+#scr-arena.prop.crowd #centerDisc{width:min(70vw,320px,34vh);height:min(70vw,320px,34vh);}
+#scr-arena.prop.crowd .pick{font-size:17px;padding:12px 16px;}
+#scr-arena.prop #discHint{font-size:14px;}
+#scr-arena.prop #pickLabel{font-size:14px;}
+#scr-arena.prop .pick{font-size:21px;padding:17px 22px;border-radius:16px;}
+#scr-arena.prop #nobodyBtn{font-size:16px;}
 #propPick{display:none;flex-direction:column;align-items:center;gap:11px;margin:18px 0 auto;}
 #scr-arena.prop #propPick{display:flex;}
 #pickLabel{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.15em;}
@@ -137,7 +155,7 @@ details.adv[open] summary::before{content:"▾ ";}
 .fixgrid{display:none;flex-wrap:wrap;gap:7px;justify-content:center;max-width:min(400px,92vw);margin-top:8px;}
 .fixgrid.on{display:flex;}
 /* sing */
-.bigword{font-size:clamp(42px,13vw,80px);color:var(--sun);line-height:1;margin:6px 0 2px;
+.bigword{font-size:clamp(48px,16vw,92px);color:var(--sun);line-height:1;margin:8px 0 4px;white-space:nowrap;
   text-shadow:0 0 24px rgba(255,207,63,.5);word-break:break-word;}
 .singer{font-size:21px;}
 .chips{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center;}
@@ -160,22 +178,24 @@ details.adv[open] summary::before{content:"▾ ";}
 #micStatus.hot{color:var(--good);font-weight:700;}
 #micDbg{font-size:11px;color:var(--dim);opacity:.65;font-variant-numeric:tabular-nums;min-height:14px;}
 /* vote / steal */
-.votebtns{display:flex;gap:14px;margin-top:22px;}
-.votebtns .btn{font-size:21px;padding:22px 24px;}
+/* Stacked full-width: the biggest tap targets the screen allows, and neither
+   label wraps — side by side, "TELT NIET" broke across two lines. */
+.votebtns{display:flex;flex-direction:column;gap:12px;margin-top:20px;width:min(340px,88vw);}
+.votebtns .btn{font-size:24px;padding:24px 18px;width:100%;}
 .vote-yes{background:var(--good);box-shadow:0 6px 0 var(--good-d);color:#123309;}
 .vote-yes:active{box-shadow:0 2px 0 var(--good-d);}
 #stealList{display:flex;flex-direction:column;gap:10px;width:min(300px,86vw);margin-top:18px;}
 #stealList .btn{width:100%;font-size:16px;}
 /* scoreboard */
-#board,#winBoard{display:flex;flex-direction:column;gap:10px;width:min(360px,92vw);margin:18px 0;}
-.srow{display:flex;align-items:center;gap:10px;background:var(--panel);border-radius:12px;padding:10px 14px;}
-.srow .nm{flex:1;text-align:left;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.srow .tok{letter-spacing:2px;font-size:17px;white-space:nowrap;}
+#board,#winBoard{display:flex;flex-direction:column;gap:11px;width:min(370px,93vw);margin:20px 0;}
+.srow{display:flex;align-items:center;gap:11px;background:var(--panel);border-radius:14px;padding:14px 16px;}
+.srow .nm{flex:1;text-align:left;font-weight:700;font-size:19px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.srow .tok{letter-spacing:2px;font-size:21px;white-space:nowrap;}
 .srow.mutedP{opacity:.5;}
 .srow.outP{opacity:.35;text-decoration:line-through;}
 .bar{flex:1.2;height:12px;border-radius:6px;background:var(--line);overflow:hidden;}
 .bar .fill{height:100%;background:linear-gradient(90deg,var(--ice),var(--good));border-radius:6px;transition:width .4s;}
-.banner{font-size:clamp(24px,7vw,38px);max-width:92vw;}
+.banner{font-size:clamp(28px,8.5vw,46px);max-width:92vw;}
 .banner.good{color:var(--good);} .banner.bad{color:var(--neon);}
 .roundinfo{color:var(--dim);font-size:13px;margin-top:8px;}
 /* winner */
@@ -379,7 +399,7 @@ details.adv[open] summary::before{content:"▾ ";}
 </div>
 
 <!-- STEAL -->
-<div class="screen" id="scr-steal">
+<div class="screen fitscroll" id="scr-steal">
   <div class="singer">😈 <span class="display" style="color:var(--neon);font-size:26px" data-i18n="stealTitle"></span></div>
   <div class="bigword display" id="stealWord"></div>
   <div class="sub" data-i18n="stealPrompt"></div>
@@ -388,7 +408,7 @@ details.adv[open] summary::before{content:"▾ ";}
 </div>
 
 <!-- SCORE INTERLUDE -->
-<div class="screen" id="scr-score">
+<div class="screen fitscroll" id="scr-score">
   <div class="banner display" id="scoreBanner"></div>
   <div id="board"></div>
   <div class="roundinfo" id="roundInfo"></div>
@@ -397,7 +417,7 @@ details.adv[open] summary::before{content:"▾ ";}
 </div>
 
 <!-- WINNER -->
-<div class="screen" id="scr-win">
+<div class="screen fitscroll" id="scr-win">
   <div id="confetti"></div>
   <div class="sub">🏆 <span data-i18n="winner"></span> 🏆</div>
   <h1 class="logo display" id="winName"></h1>
@@ -998,7 +1018,8 @@ function drawZones(){
   });
 }
 addEventListener("resize", ()=>{
-  if(!isProp() && (S.phase==="countdown"||S.phase==="grab")) drawZones();
+  if(S.phase!=="countdown" && S.phase!=="grab") return;
+  if(isProp()) fitWord(); else drawZones();
 });
 
 /* ================= ARENA: name buttons (object mode) ================= */
@@ -1026,6 +1047,26 @@ $("nobodyBtn").onclick = () => {
   flash(t("nobody")); snd.no();
   setTimeout(startRound, 900);
 };
+
+/* Scale a word down only as far as that particular word needs, so ZON fills the
+   space and REGENBOOG still lands on one line. Sizing for the worst case in CSS
+   alone would shrink every word to the longest one's size. Text width scales
+   linearly with font size, so one measurement suffices — no search loop.
+   Requires white-space:nowrap on the element, or scrollWidth reports the
+   wrapped width and the shrink never happens. */
+function fitText(el, room, floor){
+  el.style.fontSize = "";
+  if(!el.textContent) return;
+  const base = parseFloat(getComputedStyle(el).fontSize);
+  const want = el.scrollWidth;
+  if(want > room) el.style.fontSize = Math.max(floor, Math.floor(base * room / want)) + "px";
+}
+function fitWord(){
+  const el = $("word");
+  if(!isProp()){ el.style.fontSize = ""; return; }
+  fitText(el, $("centerDisc").clientWidth * 0.84, 20);   // usable chord inside the circle
+}
+function fitBigWord(el){ fitText(el, el.parentElement.clientWidth, 26); }
 
 function flash(msg){
   const f = $("flash"); f.textContent = msg; f.style.display = "block";
@@ -1055,6 +1096,7 @@ function startRound(){
   saveSession();
   const prop = isProp();
   $("scr-arena").classList.toggle("prop", prop);
+  $("scr-arena").classList.toggle("crowd", prop && S.players.length > 6);
   show("scr-arena");
   if(prop){ renderPicks(); $("propPick").classList.remove("armed"); $("pickLabel").textContent = t("propReady"); }
   else drawZones();
@@ -1081,6 +1123,7 @@ function startRound(){
       S.phase = "grab"; S.grabTimeStamp = 0;
       $("cd").style.display = "none";
       $("word").textContent = S.word; $("word").style.display = "block";
+      fitWord();
       $("discHint").textContent = prop ? t("grabNowProp") : t("grabNow");
       snd.reveal();
       if(prop){
@@ -1182,7 +1225,7 @@ function startSing(){
   closeFixGrids(); syncFixButtons();
   $("singerName").textContent = currentSinger().name;
   $("voteName").textContent = currentSinger().name;
-  $("singWord").textContent = S.word;
+  $("singWord").textContent = S.word; fitBigWord($("singWord"));
   const chips = $("singChips"); chips.innerHTML = "";
   if(S.settings.solo){ const c=document.createElement("span"); c.className="chip"; c.textContent=t("solo"); chips.appendChild(c); }
   if(S.settings.volume){ const c=document.createElement("span"); c.className="chip"; c.textContent=t("volume"); chips.appendChild(c); }
@@ -1272,6 +1315,7 @@ function toVote(){
   closeFixGrids(); syncFixButtons();
   $("voteName").textContent = currentSinger().name;
   $("voteWord").textContent = S.word;
+  fitBigWord($("voteWord"));
 }
 function stopToVote(){
   if(S.phase !== "sing") return;
@@ -1364,7 +1408,7 @@ function showSteal(eligible, pendingBanner){
   S.phase = "steal";
   S._pendingBanner = pendingBanner;
   show("scr-steal");
-  $("stealWord").textContent = S.word;
+  $("stealWord").textContent = S.word; fitBigWord($("stealWord"));
   const list = $("stealList"); list.innerHTML = "";
   eligible.forEach(({q,i})=>{
     const b = document.createElement("button");
@@ -1533,7 +1577,7 @@ if(location.protocol.startsWith("http") && "serviceWorker" in navigator){
 }
 
 /* ================= INIT ================= */
-window.__sas = S; window.__mic = mic; window.__micThreshold = micThreshold; // debug/test handles
+window.__sas = S; window.__mic = mic; window.__micThreshold = micThreshold; window.__fitWord = fitWord; window.__fitBigWord = fitBigWord; // debug/test handles
 
 $("sndToggle").textContent = prefs.sound ? "🔊" : "🔇";
 restoreSetupPrefs();
